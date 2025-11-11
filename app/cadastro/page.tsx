@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 
@@ -27,10 +27,19 @@ export default function CadastroPage() {
     defaultValues: {
       ja_batizado: undefined,
       consent_lgpd: false,
+      culto_dia: "",
+      data_visita: "",
     },
   })
 
   const jaBatizado = watch("ja_batizado")
+  const cultoDia = watch("culto_dia")
+
+  useEffect(() => {
+    if (cultoDia) {
+      setValue("data_visita", cultoDia)
+    }
+  }, [cultoDia, setValue])
 
   const onSubmit = async (data: RegistrationFormData) => {
     setIsSubmitting(true)
@@ -59,7 +68,7 @@ export default function CadastroPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-8">
+    <div className="bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-8">
       <div className="max-w-2xl mx-auto">
         <Card className="shadow-lg border-2">
           <CardHeader className="text-center space-y-4">
@@ -147,30 +156,14 @@ export default function CadastroPage() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="culto_dia">Dia da visita do culto</Label>
-                <Select
-                  onValueChange={(value) => setValue("culto_dia", value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o dia" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="domingo-19h">Domingo 19h</SelectItem>
-                    <SelectItem value="quarta-20h">Quarta 20h</SelectItem>
-                    <SelectItem value="outro">Outro</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="data_visita">Data da Visita *</Label>
+                <Label htmlFor="culto_dia">Dia da visita do culto *</Label>
                 <Input
-                  id="data_visita"
+                  id="culto_dia"
                   type="date"
-                  {...register("data_visita")}
+                  {...register("culto_dia")}
                 />
-                {errors.data_visita && (
-                  <p className="text-sm text-destructive">{errors.data_visita.message}</p>
+                {errors.culto_dia && (
+                  <p className="text-sm text-destructive">{errors.culto_dia.message}</p>
                 )}
               </div>
 

@@ -70,3 +70,4 @@ O sistema inclui:
 - Sistema de tags e segmentação
 - Métricas e funil de conversão
 
+

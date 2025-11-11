@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Search, Download, RefreshCw } from "lucide-react"
 import Image from "next/image"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface Person {
   id: string
@@ -13,6 +14,8 @@ interface Person {
   telefone: string
   email: string | null
   data_nascimento: string | null
+  ja_batizado: string | null
+  denominacao: string | null
   created_at: string
   canal_origem: string | null
   visits: Array<{
@@ -26,6 +29,7 @@ export default function AdminPage() {
   const [people, setPeople] = useState<Person[]>([])
   const [filteredPeople, setFilteredPeople] = useState<Person[]>([])
   const [searchTerm, setSearchTerm] = useState("")
+  const [batismoFilter, setBatismoFilter] = useState<string>("todos")
   const [isLoading, setIsLoading] = useState(true)
 
   const fetchPeople = async () => {
@@ -49,21 +53,34 @@ export default function AdminPage() {
   }, [])
 
   useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setFilteredPeople(people)
-      return
+    let filtered = people
+
+    // Aplicar filtro de busca
+    if (searchTerm.trim() !== "") {
+      const searchLower = searchTerm.toLowerCase()
+      filtered = filtered.filter((person) => {
+        return (
+          person.nome_completo.toLowerCase().includes(searchLower) ||
+          person.telefone.includes(searchTerm) ||
+          (person.email && person.email.toLowerCase().includes(searchLower))
+        )
+      })
     }
 
-    const filtered = people.filter((person) => {
-      const searchLower = searchTerm.toLowerCase()
-      return (
-        person.nome_completo.toLowerCase().includes(searchLower) ||
-        person.telefone.includes(searchTerm) ||
-        (person.email && person.email.toLowerCase().includes(searchLower))
-      )
-    })
+    // Aplicar filtro de batismo
+    if (batismoFilter !== "todos") {
+      filtered = filtered.filter((person) => {
+        if (batismoFilter === "sim") {
+          return person.ja_batizado === "sim"
+        } else if (batismoFilter === "nao") {
+          return person.ja_batizado === "nao" || !person.ja_batizado
+        }
+        return true
+      })
+    }
+
     setFilteredPeople(filtered)
-  }, [searchTerm, people])
+  }, [searchTerm, batismoFilter, people])
 
   const exportToCSV = () => {
     const headers = [
@@ -72,6 +89,8 @@ export default function AdminPage() {
       "Telefone",
       "Email",
       "Data Nascimento",
+      "Batizado",
+      "Denominação",
       "Data Cadastro",
       "Canal Origem",
       "Última Visita",
@@ -86,6 +105,8 @@ export default function AdminPage() {
         person.telefone,
         person.email || "",
         person.data_nascimento || "",
+        person.ja_batizado === "sim" ? "Sim" : person.ja_batizado === "nao" ? "Não" : "Não informado",
+        person.denominacao || "",
         new Date(person.created_at).toLocaleDateString("pt-BR"),
         person.canal_origem || "",
         lastVisit ? new Date(lastVisit.data_visita).toLocaleDateString("pt-BR") : "",
@@ -110,7 +131,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-8">
+    <div className="bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-8">
       <div className="max-w-7xl mx-auto">
         <Card className="shadow-lg border-2">
           <CardHeader>
@@ -143,15 +164,31 @@ export default function AdminPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="mb-6">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                <Input
-                  placeholder="Buscar por nome, telefone ou email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 border-primary/20 focus:border-primary"
-                />
+            <div className="mb-6 space-y-4">
+              <div className="flex gap-4 flex-wrap">
+                <div className="flex-1 min-w-[200px]">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                    <Input
+                      placeholder="Buscar por nome, telefone ou email..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 border-primary/20 focus:border-primary"
+                    />
+                  </div>
+                </div>
+                <div className="min-w-[200px]">
+                  <Select value={batismoFilter} onValueChange={setBatismoFilter}>
+                    <SelectTrigger className="border-primary/20 focus:border-primary">
+                      <SelectValue placeholder="Filtrar por batismo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="todos">Todos</SelectItem>
+                      <SelectItem value="sim">Batizados</SelectItem>
+                      <SelectItem value="nao">Não Batizados</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
 
@@ -165,6 +202,8 @@ export default function AdminPage() {
                       <th className="text-left p-2">Nome</th>
                       <th className="text-left p-2">Telefone</th>
                       <th className="text-left p-2">Email</th>
+                      <th className="text-left p-2">Batizado</th>
+                      <th className="text-left p-2">Denominação</th>
                       <th className="text-left p-2">Data Cadastro</th>
                       <th className="text-left p-2">Última Visita</th>
                       <th className="text-left p-2">Status</th>
@@ -173,18 +212,39 @@ export default function AdminPage() {
                   <tbody>
                     {filteredPeople.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="text-center p-8 text-muted-foreground">
+                        <td colSpan={8} className="text-center p-8 text-muted-foreground">
                           Nenhum cadastro encontrado
                         </td>
                       </tr>
                     ) : (
                       filteredPeople.map((person) => {
                         const lastVisit = person.visits?.[0]
+                        const isBatizado = person.ja_batizado === "sim"
                         return (
                           <tr key={person.id} className="border-b hover:bg-muted/30 transition-colors">
                             <td className="p-2">{person.nome_completo}</td>
                             <td className="p-2">{person.telefone}</td>
                             <td className="p-2">{person.email || "-"}</td>
+                            <td className="p-2">
+                              <span
+                                className={`px-2 py-1 rounded text-xs font-medium ${
+                                  isBatizado
+                                    ? "bg-green-100 text-green-800"
+                                    : person.ja_batizado === "nao"
+                                    ? "bg-orange-100 text-orange-800"
+                                    : "bg-gray-100 text-gray-600"
+                                }`}
+                              >
+                                {isBatizado
+                                  ? "Sim"
+                                  : person.ja_batizado === "nao"
+                                  ? "Não"
+                                  : "-"}
+                              </span>
+                            </td>
+                            <td className="p-2 text-sm">
+                              {person.denominacao || "-"}
+                            </td>
                             <td className="p-2">
                               {new Date(person.created_at).toLocaleDateString("pt-BR")}
                             </td>

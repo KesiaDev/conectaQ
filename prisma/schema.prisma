@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -22,6 +22,8 @@ model People {
   bairro            String?
   cidade            String?
   uf                String?
+  ja_batizado       String?  // "sim" ou "nao"
+  denominacao       String?  // denominação se batizado
   consent_lgpd_at   DateTime?
   canal_origem      String?  // QR-19h, recepção-A
   created_at        DateTime @default(now())

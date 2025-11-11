@@ -8,7 +8,7 @@ export const registrationSchema = z.object({
     required_error: "Por favor, informe se você já é batizado",
   }),
   denominacao: z.string().optional(),
-  culto_dia: z.string().optional(),
+  culto_dia: z.string().min(1, "Dia da visita do culto é obrigatório"),
   data_visita: z.string().min(1, "Data da visita é obrigatória"),
   consent_lgpd: z.boolean().refine((val) => val === true, {
     message: "Você deve concordar com o tratamento de dados para continuar",
@@ -16,4 +16,5 @@ export const registrationSchema = z.object({
 })
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>
+
 

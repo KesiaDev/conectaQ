@@ -39,7 +39,7 @@ export default function QRPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4">
+    <div className="flex items-center justify-center bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4">
       <Card className="w-full max-w-md shadow-lg border-2">
         <CardHeader className="text-center space-y-4">
           <div className="flex justify-center">

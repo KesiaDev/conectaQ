@@ -19,6 +19,8 @@ export async function POST(request: NextRequest) {
         nome_completo: validatedData.nome_completo,
         data_nascimento: dataNascimento,
         telefone: validatedData.telefone,
+        ja_batizado: validatedData.ja_batizado,
+        denominacao: validatedData.denominacao || null,
         consent_lgpd_at: validatedData.consent_lgpd ? new Date() : null,
         canal_origem: validatedData.culto_dia || "QR",
       },

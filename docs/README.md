@@ -211,3 +211,4 @@ Antes de apresentar, verifique:
 *Documentação criada em: Novembro 2025*  
 *Versão: 1.0*
 
+

@@ -99,3 +99,4 @@ Desenvolvido com **Next.js 14**, **TypeScript**, **Prisma** e **Tailwind CSS** -
 
 *Sistema pronto para uso imediato*
 
+
