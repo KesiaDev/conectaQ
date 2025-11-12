@@ -49,7 +49,6 @@ const statusOptions: Array<{ value: EditForm["status"]; label: string }> = [
 type ExportRow = {
   "Nome Completo": string
   Telefone: string
-  Email: string
   Batizado: string
   Denominação: string
   "Data Cadastro": string
@@ -73,7 +72,6 @@ export default function AdminPage() {
     () => [
       "Nome Completo",
       "Telefone",
-      "Email",
       "Batizado",
       "Denominação",
       "Data Cadastro",
@@ -238,7 +236,6 @@ export default function AdminPage() {
       return {
         "Nome Completo": person.nome_completo,
         Telefone: person.telefone,
-        Email: person.email || "",
         Batizado: isBatizado ? "Sim" : person.ja_batizado === "nao" ? "Não" : "Não informado",
         Denominação: person.denominacao || "",
         "Data Cadastro": formatDate(person.created_at),
@@ -383,7 +380,6 @@ export default function AdminPage() {
                           <div className="flex flex-col gap-1">
                             <span className="text-base font-semibold text-foreground">{person.nome_completo}</span>
                             <span className="text-sm text-muted-foreground">{person.telefone}</span>
-                            {person.email && <span className="text-sm text-muted-foreground break-all">{person.email}</span>}
                           </div>
                           <div className="mt-2 grid grid-cols-2 gap-3 text-xs text-muted-foreground">
                             <div>
@@ -446,7 +442,6 @@ export default function AdminPage() {
                       <tr className="border-b bg-muted/50">
                         <th className="text-left p-3 text-sm font-semibold text-muted-foreground">Nome</th>
                         <th className="text-left p-3 text-sm font-semibold text-muted-foreground">Telefone</th>
-                        <th className="text-left p-3 text-sm font-semibold text-muted-foreground">Email</th>
                         <th className="text-left p-3 text-sm font-semibold text-muted-foreground">Batizado</th>
                         <th className="text-left p-3 text-sm font-semibold text-muted-foreground">Denominação</th>
                         <th className="text-left p-3 text-sm font-semibold text-muted-foreground">Data Cadastro</th>
@@ -470,7 +465,6 @@ export default function AdminPage() {
                             <tr key={person.id} className="border-b hover:bg-muted/30 transition-colors">
                               <td className="p-3">{person.nome_completo}</td>
                               <td className="p-3">{person.telefone}</td>
-                              <td className="p-3">{person.email || "-"}</td>
                               <td className="p-3">
                                 <span
                                   className={`px-2 py-1 rounded text-xs font-medium ${
