@@ -8,9 +8,6 @@ import { Search, RefreshCw, Edit, Trash2, FileText, FileSpreadsheet } from "luci
 import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useSession, signOut } from "next-auth/react"
-import { jsPDF } from "jspdf"
-import autoTable from "jspdf-autotable"
-import * as XLSX from "xlsx"
 
 interface Person {
   id: string
