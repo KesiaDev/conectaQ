@@ -200,16 +200,16 @@ export default function CadastroPage() {
                   )}
                 </div>
 
-                {jaBatizado === "sim" && (
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="denominacao" className="text-sm font-medium text-foreground/80">Qual denominação?</Label>
-                    <Input
-                      id="denominacao"
-                      {...register("denominacao")}
-                      placeholder="Ex: Assembleia de Deus, Batista, etc."
-                    />
-                  </div>
-                )}
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="denominacao" className="text-sm font-medium text-foreground/80">
+                    {jaBatizado === "sim" ? "Qual denominação?" : "Denominação (opcional)"}
+                  </Label>
+                  <Input
+                    id="denominacao"
+                    {...register("denominacao")}
+                    placeholder="Ex: Assembleia de Deus, Batista, etc."
+                  />
+                </div>
 
                 <div className="space-y-2 md:col-span-2 lg:col-span-1">
                   <Label htmlFor="culto_dia" className="text-sm font-medium text-foreground/80">Dia da visita do culto *</Label>
