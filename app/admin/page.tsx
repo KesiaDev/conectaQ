@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Search, RefreshCw, Edit, Trash2, FileText, FileSpreadsheet } from "lucide-react"
+import { Search, RefreshCw, Edit, Trash2, FileText, FileSpreadsheet, LogOut } from "lucide-react"
 import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useSession, signOut } from "next-auth/react"
@@ -311,10 +311,11 @@ export default function AdminPage() {
               <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
                 <Button
                   onClick={() => signOut({ callbackUrl: "/login" })}
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
-                  className="justify-center"
+                  className="justify-center border-destructive/50 text-destructive hover:bg-destructive hover:text-destructive-foreground"
                 >
+                  <LogOut className="mr-2 h-4 w-4" />
                   Sair
                 </Button>
                 <Button
