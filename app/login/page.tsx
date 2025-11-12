@@ -17,6 +17,12 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
+  const [mode, setMode] = useState<"login" | "change">("login")
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [changeFeedback, setChangeFeedback] = useState<string | null>(null)
+
   const authError = searchParams.get("error")
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -40,9 +46,156 @@ export default function LoginPage() {
     }
   }
 
+  const handleChangePassword = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setIsSubmitting(true)
+    setErrorMessage(null)
+    setChangeFeedback(null)
+
+    if (newPassword !== confirmPassword) {
+      setIsSubmitting(false)
+      setErrorMessage("As senhas novas não conferem.")
+      return
+    }
+
+    try {
+      const response = await fetch("/api/admin/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          currentPassword,
+          newPassword,
+        }),
+      })
+
+      const payload = await response.json()
+
+      if (!response.ok) {
+        throw new Error(payload?.message || "Erro ao atualizar senha")
+      }
+
+      setChangeFeedback("Senha atualizada com sucesso! Use a nova senha para entrar.")
+      setMode("login")
+      setPassword("")
+      setCurrentPassword("")
+      setNewPassword("")
+      setConfirmPassword("")
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : "Erro ao atualizar senha")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const renderLoginForm = () => (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="username">Usuário</Label>
+        <Input
+          id="username"
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+          autoComplete="username"
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="password">Senha</Label>
+        <Input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          autoComplete="current-password"
+          required
+        />
+      </div>
+
+      {(errorMessage || authError) && (
+        <p className="text-sm text-destructive">
+          {errorMessage || "Sessão expirada. Faça login novamente."}
+        </p>
+      )}
+
+      <Button
+        type="submit"
+        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Entrando..." : "Entrar"}
+      </Button>
+    </form>
+  )
+
+  const renderChangePasswordForm = () => (
+    <form onSubmit={handleChangePassword} className="space-y-5">
+      <div className="space-y-2">
+        <Label htmlFor="username-change">Usuário</Label>
+        <Input
+          id="username-change"
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="current-password">Senha atual</Label>
+        <Input
+          id="current-password"
+          type="password"
+          value={currentPassword}
+          onChange={(event) => setCurrentPassword(event.target.value)}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="new-password">Nova senha</Label>
+        <Input
+          id="new-password"
+          type="password"
+          value={newPassword}
+          onChange={(event) => setNewPassword(event.target.value)}
+          required
+          minLength={6}
+        />
+        <p className="text-xs text-muted-foreground">Mínimo de 6 caracteres.</p>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="confirm-password">Confirmar nova senha</Label>
+        <Input
+          id="confirm-password"
+          type="password"
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
+          required
+          minLength={6}
+        />
+      </div>
+
+      {(errorMessage || changeFeedback) && (
+        <p className={`text-sm ${errorMessage ? "text-destructive" : "text-green-600"}`}>
+          {errorMessage || changeFeedback}
+        </p>
+      )}
+
+      <Button
+        type="submit"
+        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Atualizando..." : "Atualizar senha"}
+      </Button>
+    </form>
+  )
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-8 sm:py-12">
-      <Card className="w-full max-w-sm sm:max-w-md shadow-lg border-2">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4">
+      <Card className="w-full max-w-md shadow-lg border-2">
         <CardHeader className="text-center space-y-4">
           <div className="flex justify-center">
             <Image
@@ -50,53 +203,47 @@ export default function LoginPage() {
               alt="ConectaQ"
               width={200}
               height={80}
-              className="w-40 h-auto sm:w-48"
+              className="w-40 h-auto"
             />
           </div>
-          <CardTitle className="text-xl font-semibold text-primary sm:text-2xl">Acesso Administrativo</CardTitle>
-          <CardDescription className="text-sm text-foreground/80 sm:text-base">
-            Entre com as credenciais fornecidas para acessar o painel
+          <CardTitle className="text-2xl text-primary">
+            {mode === "login" ? "Acesso Administrativo" : "Trocar Senha"}
+          </CardTitle>
+          <CardDescription>
+            {mode === "login"
+              ? "Entre com as credenciais fornecidas para acessar o painel"
+              : "Informe usuário, senha atual e nova senha para atualizar suas credenciais"}
           </CardDescription>
         </CardHeader>
-        <CardContent className="px-4 sm:px-6">
-          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="username" className="text-sm text-foreground/80">Usuário</Label>
-              <Input
-                id="username"
-                value={username}
-                onChange={(event) => setUsername(event.target.value)}
-                autoComplete="username"
-                required
-              />
-            </div>
+        <CardContent className="space-y-6">
+          {mode === "login" ? renderLoginForm() : renderChangePasswordForm()}
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                autoComplete="current-password"
-                required
-              />
-            </div>
-
-            {(errorMessage || authError) && (
-              <p className="text-sm text-destructive">
-                {errorMessage || "Sessão expirada. Faça login novamente."}
-              </p>
+          <div className="text-center text-sm text-muted-foreground">
+            {mode === "login" ? (
+              <button
+                type="button"
+                className="text-primary hover:underline"
+                onClick={() => {
+                  setMode("change")
+                  setErrorMessage(null)
+                }}
+              >
+                Trocar senha
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="text-primary hover:underline"
+                onClick={() => {
+                  setMode("login")
+                  setErrorMessage(null)
+                  setChangeFeedback(null)
+                }}
+              >
+                Voltar ao login
+              </button>
             )}
-
-            <Button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Entrando..." : "Entrar"}
-            </Button>
-          </form>
+          </div>
         </CardContent>
       </Card>
     </div>

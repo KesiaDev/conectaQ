@@ -10,6 +10,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model AdminUser {
+  id            String   @id @default(cuid())
+  username      String   @unique
+  password_hash String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@map("admin_users")
+}
+
 model People {
   id                String   @id @default(cuid())
   nome_completo     String
