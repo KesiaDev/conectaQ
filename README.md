@@ -7,7 +7,7 @@ Sistema de cadastro via QR Code para a CASA - Igreja do Evangelho Quadrangular C
 - ✅ Página inicial com boas-vindas
 - ✅ Formulário de cadastro com validação (react-hook-form + zod)
 - ✅ Página de sucesso com links para Instagram e WhatsApp
-- ✅ API REST para salvar dados no banco (Prisma + SQLite)
+- ✅ API REST para salvar dados no banco (Prisma + PostgreSQL)
 - ✅ Painel administrativo com listagem, busca e exportação CSV
 - ✅ Layout moderno com shadcn/ui
 - ✅ Consentimento LGPD antes do envio
@@ -18,7 +18,7 @@ Sistema de cadastro via QR Code para a CASA - Igreja do Evangelho Quadrangular C
 - Next.js 14 (App Router)
 - TypeScript
 - Tailwind CSS
-- Prisma + SQLite
+- Prisma + PostgreSQL
 - shadcn/ui
 - react-hook-form + zod
 - QRCode
@@ -30,19 +30,28 @@ Sistema de cadastro via QR Code para a CASA - Igreja do Evangelho Quadrangular C
 npm install
 ```
 
-2. Configure o banco de dados:
-```bash
-npx prisma generate
-npx prisma migrate dev --name init
+2. Configure as variáveis de ambiente (`.env`):
+```
+DATABASE_URL="postgresql://USER:SENHA@HOST:PORT/DATABASE?sslmode=require"
+NEXTAUTH_SECRET="gera-um-segredo-aleatorio"
+ADMIN_USERNAME="pastor-dennis"
+ADMIN_PASSWORD="sua-senha-segura"
 ```
 
-3. Inicie o servidor de desenvolvimento:
+3. Gere o cliente do Prisma e aplique as migrações:
+```bash
+npx prisma generate
+npx prisma migrate dev --name init_postgres
+```
+
+4. Inicie o servidor de desenvolvimento:
 ```bash
 npm run dev
 ```
 
-4. Acesse:
+5. Acesse:
 - Página inicial: http://localhost:3000
+- Login admin: http://localhost:3000/login
 - Painel admin: http://localhost:3000/admin
 - QR Code: http://localhost:3000/qr
 

@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Search, Download, RefreshCw } from "lucide-react"
 import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useSession, signOut } from "next-auth/react"
 
 interface Person {
   id: string
@@ -26,11 +27,21 @@ interface Person {
 }
 
 export default function AdminPage() {
+  const { status } = useSession()
+
   const [people, setPeople] = useState<Person[]>([])
   const [filteredPeople, setFilteredPeople] = useState<Person[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [batismoFilter, setBatismoFilter] = useState<string>("todos")
   const [isLoading, setIsLoading] = useState(true)
+
+  if (status === "loading") {
+    return (
+      <div className="bg-gradient-to-br from-background via-secondary/5 to-accent/10 min-h-screen flex items-center justify-center">
+        <span className="text-sm text-muted-foreground">Verificando acesso...</span>
+      </div>
+    )
+  }
 
   const fetchPeople = async () => {
     setIsLoading(true)
@@ -152,6 +163,9 @@ export default function AdminPage() {
                 </div>
               </div>
               <div className="flex gap-2">
+                <Button onClick={() => signOut({ callbackUrl: "/login" })} variant="ghost" size="sm">
+                  Sair
+                </Button>
                 <Button onClick={fetchPeople} variant="outline" className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground" size="sm">
                   <RefreshCw className="mr-2 h-4 w-4" />
                   Atualizar

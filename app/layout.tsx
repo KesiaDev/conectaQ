@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import DeveloperFooter from '@/components/DeveloperFooter'
+import SessionWrapper from '@/components/SessionProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,10 +19,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
-          <main className="flex-1">{children}</main>
-          <DeveloperFooter />
-        </div>
+        <SessionWrapper>
+          <div className="min-h-screen flex flex-col">
+            <main className="flex-1">{children}</main>
+            <DeveloperFooter />
+          </div>
+        </SessionWrapper>
       </body>
     </html>
   )
