@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Search, RefreshCw, Edit, Trash2, FileText, FileSpreadsheet, LogOut } from "lucide-react"
+import { Search, RefreshCw, Edit, Trash2, FileText, FileSpreadsheet, LogOut, ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useSession, signOut } from "next-auth/react"
@@ -60,13 +60,19 @@ export default function AdminPage() {
   const { status } = useSession()
 
   const [people, setPeople] = useState<Person[]>([])
-  const [filteredPeople, setFilteredPeople] = useState<Person[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [batismoFilter, setBatismoFilter] = useState<string>("todos")
   const [isLoading, setIsLoading] = useState(true)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [editForm, setEditForm] = useState<EditForm | null>(null)
   const [isSaving, setIsSaving] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pagination, setPagination] = useState({
+    page: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 50,
+  })
 
   const headers = useMemo(
     () => [
@@ -86,53 +92,47 @@ export default function AdminPage() {
     return new Date(value).toLocaleDateString("pt-BR")
   }
 
-  const fetchPeople = async () => {
+  const fetchPeople = useCallback(async (page: number = 1) => {
     setIsLoading(true)
     try {
-      const response = await fetch("/api/admin/people")
+      const params = new URLSearchParams({
+        page: page.toString(),
+        search: searchTerm,
+        batismo: batismoFilter,
+      })
+
+      const response = await fetch(`/api/admin/people?${params}`)
       if (response.ok) {
-        const data = await response.json()
-        setPeople(data)
-        setFilteredPeople(data)
+        const result = await response.json()
+        setPeople(result.data)
+        setPagination(result.pagination)
+        setCurrentPage(page)
       }
     } catch (error) {
       console.error("Error fetching people:", error)
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [searchTerm, batismoFilter])
 
   useEffect(() => {
-    fetchPeople()
-  }, [])
+    fetchPeople(1)
+  }, [fetchPeople])
 
   useEffect(() => {
-    let filtered = people
+    setCurrentPage(1)
+    fetchPeople(1)
+  }, [batismoFilter, fetchPeople])
 
-    if (searchTerm.trim() !== "") {
-      const searchLower = searchTerm.toLowerCase()
-      filtered = filtered.filter((person) => {
-        return (
-          person.nome_completo.toLowerCase().includes(searchLower) ||
-          person.telefone.includes(searchTerm) ||
-          (person.email && person.email.toLowerCase().includes(searchLower))
-        )
-      })
-    }
+  // Debounce para busca
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCurrentPage(1)
+      fetchPeople(1)
+    }, 500)
 
-    if (batismoFilter !== "todos") {
-      filtered = filtered.filter((person) => {
-        if (batismoFilter === "sim") {
-          return person.ja_batizado === "sim"
-        } else if (batismoFilter === "nao") {
-          return person.ja_batizado === "nao" || !person.ja_batizado
-        }
-        return true
-      })
-    }
-
-    setFilteredPeople(filtered)
-  }, [searchTerm, batismoFilter, people])
+    return () => clearTimeout(timer)
+  }, [searchTerm, fetchPeople])
 
   const extractLastVisit = (person: Person) => person.visits?.[0]
 
@@ -229,8 +229,28 @@ export default function AdminPage() {
     }
   }
 
+  const fetchAllForExport = async (): Promise<Person[]> => {
+    try {
+      const params = new URLSearchParams({
+        page: "1",
+        search: searchTerm,
+        batismo: batismoFilter,
+      })
+      // Buscar todos sem limite de página para exportação
+      const response = await fetch(`/api/admin/people?${params}&limit=10000`)
+      if (response.ok) {
+        const result = await response.json()
+        return result.data
+      }
+      return []
+    } catch (error) {
+      console.error("Error fetching all for export:", error)
+      return []
+    }
+  }
+
   const exportRows = useMemo<ExportRow[]>(() => {
-    return filteredPeople.map((person) => {
+    return people.map((person) => {
       const lastVisit = extractLastVisit(person)
       const isBatizado = person.ja_batizado === "sim"
       return {
@@ -243,38 +263,84 @@ export default function AdminPage() {
         Status: lastVisit?.status || "novo",
       }
     })
-  }, [filteredPeople])
+  }, [people])
 
   const exportToExcel = async () => {
-    if (exportRows.length === 0) {
-      alert("Não há cadastros para exportar")
-      return
-    }
+    setIsLoading(true)
+    try {
+      const allData = await fetchAllForExport()
+      if (allData.length === 0) {
+        alert("Não há cadastros para exportar")
+        return
+      }
 
-    const XLSX = await import("xlsx")
-    const worksheet = XLSX.utils.json_to_sheet(exportRows)
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Cadastros")
-    XLSX.writeFile(workbook, `cadastros_${new Date().toISOString().split("T")[0]}.xlsx`)
+      const rows: ExportRow[] = allData.map((person) => {
+        const lastVisit = extractLastVisit(person)
+        const isBatizado = person.ja_batizado === "sim"
+        return {
+          "Nome Completo": person.nome_completo,
+          Telefone: person.telefone,
+          Batizado: isBatizado ? "Sim" : person.ja_batizado === "nao" ? "Não" : "Não informado",
+          Denominação: person.denominacao || "",
+          "Data Cadastro": formatDate(person.created_at),
+          "Última Visita": lastVisit ? formatDate(lastVisit.data_visita) : "",
+          Status: lastVisit?.status || "novo",
+        }
+      })
+
+      const XLSX = await import("xlsx")
+      const worksheet = XLSX.utils.json_to_sheet(rows)
+      const workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Cadastros")
+      XLSX.writeFile(workbook, `cadastros_${new Date().toISOString().split("T")[0]}.xlsx`)
+    } catch (error) {
+      console.error("Error exporting to Excel:", error)
+      alert("Erro ao exportar para Excel")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const exportToPDF = async () => {
-    if (exportRows.length === 0) {
-      alert("Não há cadastros para exportar")
-      return
+    setIsLoading(true)
+    try {
+      const allData = await fetchAllForExport()
+      if (allData.length === 0) {
+        alert("Não há cadastros para exportar")
+        return
+      }
+
+      const rows: ExportRow[] = allData.map((person) => {
+        const lastVisit = extractLastVisit(person)
+        const isBatizado = person.ja_batizado === "sim"
+        return {
+          "Nome Completo": person.nome_completo,
+          Telefone: person.telefone,
+          Batizado: isBatizado ? "Sim" : person.ja_batizado === "nao" ? "Não" : "Não informado",
+          Denominação: person.denominacao || "",
+          "Data Cadastro": formatDate(person.created_at),
+          "Última Visita": lastVisit ? formatDate(lastVisit.data_visita) : "",
+          Status: lastVisit?.status || "novo",
+        }
+      })
+
+      const { jsPDF } = await import("jspdf")
+      const autoTable = (await import("jspdf-autotable")).default
+
+      const doc = new jsPDF()
+      autoTable(doc, {
+        head: [headers],
+        body: rows.map((row) => headers.map((header) => row[header as keyof ExportRow] || "")),
+        styles: { fontSize: 9 },
+        headStyles: { fillColor: [24, 119, 242], textColor: 255 },
+      })
+      doc.save(`cadastros_${new Date().toISOString().split("T")[0]}.pdf`)
+    } catch (error) {
+      console.error("Error exporting to PDF:", error)
+      alert("Erro ao exportar para PDF")
+    } finally {
+      setIsLoading(false)
     }
-
-    const { jsPDF } = await import("jspdf")
-    const autoTable = (await import("jspdf-autotable")).default
-
-    const doc = new jsPDF()
-    autoTable(doc, {
-      head: [headers],
-      body: exportRows.map((row) => headers.map((header) => row[header as keyof ExportRow] || "")),
-      styles: { fontSize: 9 },
-      headStyles: { fillColor: [24, 119, 242], textColor: 255 },
-    })
-    doc.save(`cadastros_${new Date().toISOString().split("T")[0]}.pdf`)
   }
 
   if (status === "loading") {
@@ -319,7 +385,7 @@ export default function AdminPage() {
                   Sair
                 </Button>
                 <Button
-                  onClick={fetchPeople}
+                  onClick={() => fetchPeople(currentPage)}
                   variant="outline"
                   className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground"
                   size="sm"
@@ -368,12 +434,12 @@ export default function AdminPage() {
             ) : (
               <>
                 <div className="space-y-4 md:hidden">
-                  {filteredPeople.length === 0 ? (
+                  {people.length === 0 ? (
                     <div className="rounded-lg border border-dashed border-muted-foreground/40 p-6 text-center text-sm text-muted-foreground">
                       Nenhum cadastro encontrado
                     </div>
                   ) : (
-                    filteredPeople.map((person) => {
+                    people.map((person) => {
                       const lastVisit = extractLastVisit(person)
                       const isBatizado = person.ja_batizado === "sim"
                       return (
@@ -452,14 +518,14 @@ export default function AdminPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredPeople.length === 0 ? (
+                      {people.length === 0 ? (
                         <tr>
                           <td colSpan={9} className="text-center p-8 text-muted-foreground">
                             Nenhum cadastro encontrado
                           </td>
                         </tr>
                       ) : (
-                        filteredPeople.map((person) => {
+                        people.map((person) => {
                           const lastVisit = extractLastVisit(person)
                           const isBatizado = person.ja_batizado === "sim"
                           return (
@@ -515,8 +581,62 @@ export default function AdminPage() {
               </>
             )}
 
-            <div className="mt-6 text-sm text-muted-foreground">
-              Total: {filteredPeople.length} cadastro(s)
+            <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="text-sm text-muted-foreground">
+                Mostrando {people.length > 0 ? (currentPage - 1) * pagination.itemsPerPage + 1 : 0} a {Math.min(currentPage * pagination.itemsPerPage, pagination.totalItems)} de {pagination.totalItems} cadastro(s)
+              </div>
+              
+              {pagination.totalPages > 1 && (
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fetchPeople(currentPage - 1)}
+                    disabled={currentPage === 1 || isLoading}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Anterior
+                  </Button>
+                  
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                      let pageNum: number
+                      if (pagination.totalPages <= 5) {
+                        pageNum = i + 1
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1
+                      } else if (currentPage >= pagination.totalPages - 2) {
+                        pageNum = pagination.totalPages - 4 + i
+                      } else {
+                        pageNum = currentPage - 2 + i
+                      }
+                      
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={currentPage === pageNum ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => fetchPeople(pageNum)}
+                          disabled={isLoading}
+                          className="min-w-[40px]"
+                        >
+                          {pageNum}
+                        </Button>
+                      )
+                    })}
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fetchPeople(currentPage + 1)}
+                    disabled={currentPage === pagination.totalPages || isLoading}
+                  >
+                    Próxima
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

@@ -1,12 +1,58 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 
 export const dynamic = "force-dynamic"
 export const revalidate = 0
 
-export async function GET() {
+const ITEMS_PER_PAGE = 50
+
+export async function GET(request: NextRequest) {
   try {
+    const searchParams = request.nextUrl.searchParams
+    const page = parseInt(searchParams.get("page") || "1")
+    const search = searchParams.get("search") || ""
+    const batismoFilter = searchParams.get("batismo") || "todos"
+    const limitParam = searchParams.get("limit")
+    const limit = limitParam ? parseInt(limitParam) : ITEMS_PER_PAGE
+
+    const skip = (page - 1) * limit
+
+    // Construir filtros
+    const where: any = {}
+
+    if (search.trim()) {
+      where.OR = [
+        { nome_completo: { contains: search, mode: "insensitive" } },
+        { telefone: { contains: search } },
+        { email: { contains: search, mode: "insensitive" } },
+      ]
+    }
+
+    if (batismoFilter !== "todos") {
+      if (batismoFilter === "sim") {
+        where.ja_batizado = "sim"
+      } else if (batismoFilter === "nao") {
+        where.AND = [
+          {
+            OR: [
+              { ja_batizado: "nao" },
+              { ja_batizado: null },
+            ],
+          },
+        ]
+        if (where.OR) {
+          where.AND.push({ OR: where.OR })
+          delete where.OR
+        }
+      }
+    }
+
+    // Buscar total para paginação
+    const total = await prisma.people.count({ where })
+
+    // Buscar pessoas com paginação
     const people = await prisma.people.findMany({
+      where,
       include: {
         visits: {
           orderBy: {
@@ -18,13 +64,26 @@ export async function GET() {
       orderBy: {
         created_at: "desc",
       },
+      skip,
+      take: limit,
     })
 
-    return NextResponse.json(people, {
-      headers: {
-        "Cache-Control": "no-store, no-cache, must-revalidate",
+    return NextResponse.json(
+      {
+        data: people,
+        pagination: {
+          page,
+          totalPages: Math.ceil(total / limit),
+          totalItems: total,
+          itemsPerPage: limit,
+        },
       },
-    })
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      }
+    )
   } catch (error: any) {
     console.error("Error fetching people:", error)
     return NextResponse.json(
