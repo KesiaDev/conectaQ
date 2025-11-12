@@ -32,7 +32,7 @@ type EditForm = {
   nome_completo: string
   telefone: string
   email: string | null
-  ja_batizado: "sim" | "nao" | ""
+  ja_batizado: "sim" | "nao" | "nao_informado"
   denominacao: string | null
   canal_origem: string | null
   data_visita: string
@@ -145,7 +145,12 @@ export default function AdminPage() {
       nome_completo: person.nome_completo,
       telefone: person.telefone,
       email: person.email,
-      ja_batizado: (person.ja_batizado as EditForm["ja_batizado"]) || "",
+      ja_batizado:
+        person.ja_batizado === "sim"
+          ? "sim"
+          : person.ja_batizado === "nao"
+          ? "nao"
+          : "nao_informado",
       denominacao: person.denominacao,
       canal_origem: person.canal_origem,
       data_visita: lastVisit?.data_visita ? lastVisit.data_visita.slice(0, 10) : "",
@@ -172,7 +177,7 @@ export default function AdminPage() {
         nome_completo: editForm.nome_completo,
         telefone: editForm.telefone,
         email: editForm.email,
-        ja_batizado: editForm.ja_batizado || null,
+        ja_batizado: editForm.ja_batizado === "nao_informado" ? null : editForm.ja_batizado,
         denominacao: editForm.denominacao,
         canal_origem: editForm.canal_origem,
         data_nascimento: editForm.data_nascimento,
@@ -571,7 +576,7 @@ export default function AdminPage() {
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Não informado</SelectItem>
+                      <SelectItem value="nao_informado">Não informado</SelectItem>
                       <SelectItem value="sim">Sim</SelectItem>
                       <SelectItem value="nao">Não</SelectItem>
                     </SelectContent>
