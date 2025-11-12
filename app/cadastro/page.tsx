@@ -207,7 +207,7 @@ export default function CadastroPage() {
                   <Input
                     id="denominacao"
                     {...register("denominacao")}
-                    placeholder="Ex: Assembleia de Deus, Batista, etc."
+                    placeholder=""
                   />
                 </div>
 
