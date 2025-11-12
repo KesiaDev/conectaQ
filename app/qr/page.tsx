@@ -59,7 +59,14 @@ export default function QRPage() {
         <CardContent className="space-y-4">
           <div className="flex justify-center">
             {qrCodeDataUrl ? (
-              <img src={qrCodeDataUrl} alt="QR Code" className="w-full max-w-xs" />
+              <Image
+                src={qrCodeDataUrl}
+                alt="QR Code"
+                width={300}
+                height={300}
+                className="w-full max-w-xs h-auto"
+                unoptimized
+              />
             ) : (
               <div className="w-full max-w-xs aspect-square bg-gray-200 animate-pulse rounded" />
             )}

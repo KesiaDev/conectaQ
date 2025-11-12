@@ -35,14 +35,6 @@ export default function AdminPage() {
   const [batismoFilter, setBatismoFilter] = useState<string>("todos")
   const [isLoading, setIsLoading] = useState(true)
 
-  if (status === "loading") {
-    return (
-      <div className="bg-gradient-to-br from-background via-secondary/5 to-accent/10 min-h-screen flex items-center justify-center">
-        <span className="text-sm text-muted-foreground">Verificando acesso...</span>
-      </div>
-    )
-  }
-
   const fetchPeople = async () => {
     setIsLoading(true)
     try {
@@ -92,6 +84,14 @@ export default function AdminPage() {
 
     setFilteredPeople(filtered)
   }, [searchTerm, batismoFilter, people])
+
+  if (status === "loading") {
+    return (
+      <div className="bg-gradient-to-br from-background via-secondary/5 to-accent/10 min-h-screen flex items-center justify-center">
+        <span className="text-sm text-muted-foreground">Verificando acesso...</span>
+      </div>
+    )
+  }
 
   const exportToCSV = () => {
     const headers = [
