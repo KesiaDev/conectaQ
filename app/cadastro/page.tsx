@@ -68,8 +68,8 @@ export default function CadastroPage() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-8">
-      <div className="max-w-2xl mx-auto">
+    <div className="bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-8 sm:py-12">
+      <div className="mx-auto w-full max-w-xl lg:max-w-3xl">
         <Card className="shadow-lg border-2">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center">
@@ -78,97 +78,101 @@ export default function CadastroPage() {
                 alt="ConectaQ"
                 width={200}
                 height={80}
-                className="w-auto h-auto"
+                className="w-40 h-auto sm:w-52"
               />
             </div>
-            <CardTitle className="text-2xl text-primary">Cadastro de Visitante</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl font-semibold text-primary sm:text-3xl">
+              Cadastro de Visitante
+            </CardTitle>
+            <CardDescription className="text-sm text-foreground/80 sm:text-base">
               Preencha os dados abaixo para fazer seu cadastro
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 sm:px-6">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="nome_completo">Nome Completo *</Label>
-                <Input
-                  id="nome_completo"
-                  {...register("nome_completo")}
-                  placeholder="Digite seu nome completo"
-                />
-                {errors.nome_completo && (
-                  <p className="text-sm text-destructive">{errors.nome_completo.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="data_nascimento">Data de Nascimento *</Label>
-                <Input
-                  id="data_nascimento"
-                  type="date"
-                  {...register("data_nascimento")}
-                />
-                {errors.data_nascimento && (
-                  <p className="text-sm text-destructive">{errors.data_nascimento.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="telefone">Telefone *</Label>
-                <Input
-                  id="telefone"
-                  type="tel"
-                  {...register("telefone")}
-                  placeholder="(54) 99999-9999"
-                />
-                {errors.telefone && (
-                  <p className="text-sm text-destructive">{errors.telefone.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label>Já é batizado nas águas? *</Label>
-                <Select
-                  value={jaBatizado}
-                  onValueChange={(value) => setValue("ja_batizado", value as "sim" | "nao")}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione uma opção" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="sim">Sim</SelectItem>
-                    <SelectItem value="nao">Não</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.ja_batizado && (
-                  <p className="text-sm text-destructive">{errors.ja_batizado.message}</p>
-                )}
-              </div>
-
-              {jaBatizado === "sim" && (
-                <div className="space-y-2">
-                  <Label htmlFor="denominacao">Qual denominação?</Label>
+              <div className="space-y-6 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="nome_completo" className="text-sm font-medium text-foreground/80">Nome Completo *</Label>
                   <Input
-                    id="denominacao"
-                    {...register("denominacao")}
-                    placeholder="Ex: Assembleia de Deus, Batista, etc."
+                    id="nome_completo"
+                    {...register("nome_completo")}
+                    placeholder="Digite seu nome completo"
                   />
+                  {errors.nome_completo && (
+                    <p className="text-sm text-destructive">{errors.nome_completo.message}</p>
+                  )}
                 </div>
-              )}
 
-              <div className="space-y-2">
-                <Label htmlFor="culto_dia">Dia da visita do culto *</Label>
-                <Input
-                  id="culto_dia"
-                  type="date"
-                  {...register("culto_dia")}
-                />
-                {errors.culto_dia && (
-                  <p className="text-sm text-destructive">{errors.culto_dia.message}</p>
+                <div className="space-y-2">
+                  <Label htmlFor="data_nascimento" className="text-sm font-medium text-foreground/80">Data de Nascimento *</Label>
+                  <Input
+                    id="data_nascimento"
+                    type="date"
+                    {...register("data_nascimento")}
+                  />
+                  {errors.data_nascimento && (
+                    <p className="text-sm text-destructive">{errors.data_nascimento.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="telefone" className="text-sm font-medium text-foreground/80">Telefone *</Label>
+                  <Input
+                    id="telefone"
+                    type="tel"
+                    {...register("telefone")}
+                    placeholder="(54) 99999-9999"
+                  />
+                  {errors.telefone && (
+                    <p className="text-sm text-destructive">{errors.telefone.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <Label className="text-sm font-medium text-foreground/80">Já é batizado nas águas? *</Label>
+                  <Select
+                    value={jaBatizado}
+                    onValueChange={(value) => setValue("ja_batizado", value as "sim" | "nao")}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma opção" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sim">Sim</SelectItem>
+                      <SelectItem value="nao">Não</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.ja_batizado && (
+                    <p className="text-sm text-destructive">{errors.ja_batizado.message}</p>
+                  )}
+                </div>
+
+                {jaBatizado === "sim" && (
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="denominacao" className="text-sm font-medium text-foreground/80">Qual denominação?</Label>
+                    <Input
+                      id="denominacao"
+                      {...register("denominacao")}
+                      placeholder="Ex: Assembleia de Deus, Batista, etc."
+                    />
+                  </div>
                 )}
+
+                <div className="space-y-2 md:col-span-2 lg:col-span-1">
+                  <Label htmlFor="culto_dia" className="text-sm font-medium text-foreground/80">Dia da visita do culto *</Label>
+                  <Input
+                    id="culto_dia"
+                    type="date"
+                    {...register("culto_dia")}
+                  />
+                  {errors.culto_dia && (
+                    <p className="text-sm text-destructive">{errors.culto_dia.message}</p>
+                  )}
+                </div>
               </div>
 
-              <div className="space-y-4 p-4 bg-muted/50 rounded-md border border-primary/20">
-                <div className="flex items-start space-x-2">
+              <div className="space-y-4 rounded-md border border-primary/20 bg-muted/50 p-4 sm:p-5">
+                <div className="flex items-start gap-3">
                   <Checkbox
                     id="consent_lgpd"
                     checked={watch("consent_lgpd")}
@@ -176,7 +180,7 @@ export default function CadastroPage() {
                   />
                   <Label
                     htmlFor="consent_lgpd"
-                    className="text-sm font-normal leading-relaxed cursor-pointer"
+                    className="cursor-pointer text-xs leading-relaxed text-foreground/80 sm:text-sm"
                   >
                     Autorizo o tratamento dos meus dados para fins de acolhimento, comunicação de eventos e atividades da CASA – Igreja do Evangelho Quadrangular Caxias do Sul, conforme a Lei 13.709/2018. Posso revogar a qualquer tempo. *
                   </Label>

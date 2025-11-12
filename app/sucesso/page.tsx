@@ -49,28 +49,30 @@ function SucessoContent() {
   }
 
   return (
-    <div className="flex items-center justify-center bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4">
-      <Card className="w-full max-w-md shadow-lg border-2">
-        <CardHeader className="text-center space-y-4">
+    <div className="flex items-center justify-center bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-8 sm:py-12">
+      <Card className="w-full max-w-sm sm:max-w-lg shadow-lg border-2">
+        <CardHeader className="text-center space-y-4 sm:space-y-6">
           <div className="flex justify-center">
             <Image
               src="/images/logos/Logo_Claro_ConectaQ.svg"
               alt="ConectaQ"
               width={200}
               height={80}
-              className="w-auto h-auto"
+              className="w-36 h-auto sm:w-48"
             />
           </div>
-          <div className="mx-auto mb-4 w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center">
+          <div className="mx-auto mb-2 sm:mb-4 w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center">
             <CheckCircle2 className="w-10 h-10 text-primary" />
           </div>
-          <CardTitle className="text-3xl font-bold text-primary">Cadastro Realizado!</CardTitle>
-          <CardDescription className="text-base mt-2">
+          <CardTitle className="text-2xl font-semibold text-primary sm:text-3xl">
+            Cadastro Realizado!
+          </CardTitle>
+          <CardDescription className="text-sm text-foreground/80 sm:text-base">
             Seu cadastro foi realizado com sucesso. Obrigado!
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-center text-foreground/70">
+        <CardContent className="space-y-5 px-4 sm:px-6">
+          <p className="text-center text-sm text-foreground/70 sm:text-base">
             Siga-nos nas redes sociais para ficar por dentro de todos os nossos eventos e atividades.
           </p>
           
@@ -95,7 +97,7 @@ function SucessoContent() {
             </Button>
           </div>
 
-          <p className="text-center text-sm text-muted-foreground mt-6">
+          <p className="text-center text-xs text-muted-foreground sm:text-sm">
             Que Deus te abençoe!
           </p>
         </CardContent>
@@ -106,7 +108,7 @@ function SucessoContent() {
 
 export default function SucessoPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Carregando...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-sm text-muted-foreground">Carregando...</div>}>
       <SucessoContent />
     </Suspense>
   )

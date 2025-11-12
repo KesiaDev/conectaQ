@@ -41,8 +41,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4">
-      <Card className="w-full max-w-md shadow-lg border-2">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-8 sm:py-12">
+      <Card className="w-full max-w-sm sm:max-w-md shadow-lg border-2">
         <CardHeader className="text-center space-y-4">
           <div className="flex justify-center">
             <Image
@@ -50,18 +50,18 @@ export default function LoginPage() {
               alt="ConectaQ"
               width={200}
               height={80}
-              className="w-auto h-auto"
+              className="w-40 h-auto sm:w-48"
             />
           </div>
-          <CardTitle className="text-2xl text-primary">Acesso Administrativo</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-xl font-semibold text-primary sm:text-2xl">Acesso Administrativo</CardTitle>
+          <CardDescription className="text-sm text-foreground/80 sm:text-base">
             Entre com as credenciais fornecidas para acessar o painel
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <CardContent className="px-4 sm:px-6">
+          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="username">Usuário</Label>
+              <Label htmlFor="username" className="text-sm text-foreground/80">Usuário</Label>
               <Input
                 id="username"
                 value={username}

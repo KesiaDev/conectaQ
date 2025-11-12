@@ -5,7 +5,7 @@ import Image from "next/image"
 export default function DeveloperFooter() {
   return (
     <div className="mt-auto border-t border-border/30 bg-gradient-to-b from-background to-muted/20">
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-10 sm:py-12">
         <div className="flex flex-col items-center justify-center gap-4">
           <div className="flex items-center gap-3 group">
             <div className="relative transition-transform group-hover:scale-105">
@@ -14,7 +14,7 @@ export default function DeveloperFooter() {
                 alt="KesiaDev"
                 width={900}
                 height={225}
-                className="h-40 w-auto opacity-90 group-hover:opacity-100 transition-all duration-300"
+                className="h-24 w-auto opacity-90 transition-all duration-300 group-hover:opacity-100 sm:h-40"
                 style={{
                   backgroundColor: 'transparent',
                   background: 'transparent'

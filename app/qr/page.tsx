@@ -39,24 +39,26 @@ export default function QRPage() {
   }
 
   return (
-    <div className="flex items-center justify-center bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4">
-      <Card className="w-full max-w-md shadow-lg border-2">
-        <CardHeader className="text-center space-y-4">
+    <div className="flex items-center justify-center bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-8 sm:py-12">
+      <Card className="w-full max-w-sm sm:max-w-lg shadow-lg border-2">
+        <CardHeader className="text-center space-y-3 sm:space-y-4">
           <div className="flex justify-center">
             <Image
               src="/images/logos/Logo_Claro_ConectaQ.svg"
               alt="ConectaQ"
               width={200}
               height={80}
-              className="w-auto h-auto"
+              className="w-40 h-auto sm:w-52"
             />
           </div>
-          <CardTitle className="text-2xl text-primary">QR Code de Cadastro</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-xl font-semibold text-primary sm:text-2xl">
+            QR Code de Cadastro
+          </CardTitle>
+          <CardDescription className="text-sm text-foreground/80 sm:text-base">
             Escaneie este QR Code para acessar o cadastro
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 px-4 sm:px-6">
           <div className="flex justify-center">
             {qrCodeDataUrl ? (
               <Image
@@ -64,7 +66,7 @@ export default function QRPage() {
                 alt="QR Code"
                 width={300}
                 height={300}
-                className="w-full max-w-xs h-auto"
+                className="w-full max-w-[220px] h-auto sm:max-w-xs"
                 unoptimized
               />
             ) : (
@@ -73,10 +75,10 @@ export default function QRPage() {
           </div>
           
           <div className="text-center space-y-2">
-            <p className="text-sm text-foreground/70">
+            <p className="text-sm text-foreground/70 sm:text-base">
               Aponte a câmera do celular para o QR Code acima
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground sm:text-sm break-all">
               URL: {baseUrl}
             </p>
           </div>
