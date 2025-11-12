@@ -4,11 +4,11 @@ import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Search, Download, RefreshCw, Edit, Trash2, FileText, FileSpreadsheet } from "lucide-react"
+import { Search, RefreshCw, Edit, Trash2, FileText, FileSpreadsheet } from "lucide-react"
 import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useSession, signOut } from "next-auth/react"
-import jsPDF from "jspdf"
+import { jsPDF } from "jspdf"
 import autoTable from "jspdf-autotable"
 import * as XLSX from "xlsx"
 
@@ -246,14 +246,28 @@ export default function AdminPage() {
     })
   }, [filteredPeople])
 
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
+    if (exportRows.length === 0) {
+      alert("Não há cadastros para exportar")
+      return
+    }
+
+    const XLSX = await import("xlsx")
     const worksheet = XLSX.utils.json_to_sheet(exportRows)
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheet, "Cadastros")
     XLSX.writeFile(workbook, `cadastros_${new Date().toISOString().split("T")[0]}.xlsx`)
   }
 
-  const exportToPDF = () => {
+  const exportToPDF = async () => {
+    if (exportRows.length === 0) {
+      alert("Não há cadastros para exportar")
+      return
+    }
+
+    const { jsPDF } = await import("jspdf")
+    const autoTable = (await import("jspdf-autotable")).default
+
     const doc = new jsPDF()
     autoTable(doc, {
       head: [headers],
