@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Search, RefreshCw, Edit, Trash2, FileText, FileSpreadsheet, LogOut, ChevronLeft, ChevronRight } from "lucide-react"
+import { Search, RefreshCw, Edit, Trash2, FileText, FileSpreadsheet, LogOut, ChevronLeft, ChevronRight, MessageCircle } from "lucide-react"
 import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useSession, signOut } from "next-auth/react"
@@ -135,6 +135,16 @@ export default function AdminPage() {
   }, [searchTerm, fetchPeople])
 
   const extractLastVisit = (person: Person) => person.visits?.[0]
+
+  const openWhatsApp = (telefone: string, nome: string) => {
+    // Remove caracteres não numéricos
+    const numeroLimpo = telefone.replace(/\D/g, "")
+    // Se não começar com 55 (código do Brasil), adiciona
+    const numeroFormatado = numeroLimpo.startsWith("55") ? numeroLimpo : `55${numeroLimpo}`
+    // Abre o WhatsApp com mensagem pré-formatada
+    const mensagem = encodeURIComponent(`Olá ${nome}!`)
+    window.open(`https://wa.me/${numeroFormatado}?text=${mensagem}`, "_blank")
+  }
 
   const openEditModal = (person: Person) => {
     const lastVisit = extractLastVisit(person)
@@ -446,7 +456,18 @@ export default function AdminPage() {
                         <div key={person.id} className="rounded-lg border bg-background/70 p-4 shadow-sm space-y-4">
                           <div className="flex flex-col gap-1">
                             <span className="text-base font-semibold text-foreground">{person.nome_completo}</span>
-                            <span className="text-sm text-muted-foreground">{person.telefone}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-muted-foreground">{person.telefone}</span>
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                className="h-7 w-7 text-green-600 hover:bg-green-50 hover:text-green-700"
+                                onClick={() => openWhatsApp(person.telefone, person.nome_completo)}
+                                title="Abrir WhatsApp"
+                              >
+                                <MessageCircle className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </div>
                           <div className="mt-2 grid grid-cols-2 gap-3 text-xs text-muted-foreground">
                             <div>
@@ -531,7 +552,20 @@ export default function AdminPage() {
                           return (
                             <tr key={person.id} className="border-b hover:bg-muted/30 transition-colors">
                               <td className="p-3">{person.nome_completo}</td>
-                              <td className="p-3">{person.telefone}</td>
+                              <td className="p-3">
+                                <div className="flex items-center gap-2">
+                                  <span>{person.telefone}</span>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="h-7 w-7 text-green-600 hover:bg-green-50 hover:text-green-700"
+                                    onClick={() => openWhatsApp(person.telefone, person.nome_completo)}
+                                    title="Abrir WhatsApp"
+                                  >
+                                    <MessageCircle className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </td>
                               <td className="p-3">
                                 <span
                                   className={`px-2 py-1 rounded text-xs font-medium ${
