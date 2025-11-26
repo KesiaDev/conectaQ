@@ -11,7 +11,7 @@ export default function Home() {
     <div className="flex flex-col items-center w-full bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-4 sm:py-6">
 
       {/* Seção Instagram */}
-      <div className="w-full max-w-2xl mx-auto text-center pb-6">
+      <div className="w-full max-w-3xl mx-auto text-center pb-10">
 
         <a
           href={instagramUrl}
@@ -19,15 +19,18 @@ export default function Home() {
           rel="noopener noreferrer"
           className="block cursor-pointer hover:opacity-90 transition-opacity"
         >
-          <Image
-            src="/images/instagram-promo.svg"
-            alt="Instagram - @quadrangularcaxiasdosul"
-            width={900}
-            height={900}
-            className="w-[280px] sm:w-[380px] md:w-[480px] lg:w-[520px] h-auto mx-auto"
-            priority
-          />
+          <div className="mx-auto flex justify-center">
+            <Image
+              src="/images/instagram-promo.svg"
+              alt="Instagram - @quadrangularcaxiasdosul"
+              width={1200}
+              height={1200}
+              className="w-[420px] sm:w-[520px] md:w-[650px] lg:w-[720px] h-auto !max-w-none !min-w-[420px]"
+              priority
+            />
+          </div>
         </a>
+
       </div>
 
       {/* Card de Cadastro */}
