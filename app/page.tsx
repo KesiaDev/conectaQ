@@ -27,7 +27,7 @@ export default function Home() {
               alt="Instagram - @quadrangularcaxiasdosul"
               width={400}
               height={300}
-              className="w-full max-w-sm mx-auto h-auto"
+              className="w-full max-w-xs sm:max-w-sm mx-auto h-auto"
               priority
             />
           </div>
@@ -35,7 +35,7 @@ export default function Home() {
       </div>
 
       {/* Card de Cadastro */}
-      <div className="w-full max-w-lg sm:max-w-2xl mx-auto -mt-8 sm:-mt-10">
+      <div className="w-full max-w-lg sm:max-w-2xl mx-auto -mt-14 sm:-mt-16">
         <Card className="w-full shadow-lg border-2">
           <CardHeader className="text-center space-y-4 sm:space-y-6 pt-4">
             <div className="flex justify-center">
