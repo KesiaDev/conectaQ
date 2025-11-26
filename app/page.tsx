@@ -7,12 +7,12 @@ export default function Home() {
   const instagramUrl = "https://www.instagram.com/quadrangularcaxiasdosul?igsh=MXMzb3ZzejRhcnl3cw=="
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-160px)] bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-10 sm:py-16 gap-6 sm:gap-8">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-160px)] bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-6 sm:py-8 gap-3 sm:gap-4">
       {/* Seção Instagram */}
-      <div className="w-full max-w-lg mx-auto text-center space-y-4">
-        <div className="space-y-2">
+      <div className="w-full max-w-lg mx-auto text-center space-y-2 sm:space-y-3">
+        <div className="space-y-1">
           <p className="text-xs sm:text-sm text-muted-foreground">CLIQUE PARA</p>
-          <p className="text-lg sm:text-xl font-bold text-foreground">Seguir nosso Perfil</p>
+          <p className="text-base sm:text-lg font-bold text-foreground">Seguir nosso Perfil</p>
         </div>
         
         <a
