@@ -33,7 +33,7 @@ export default function Home() {
               alt="Instagram - @quadrangularcaxiasdosul"
               width={400}
               height={300}
-              className="w-full max-w-xs sm:max-w-sm mx-auto h-auto"
+              className="w-full max-w-sm sm:max-w-md md:max-w-lg mx-auto h-auto"
               priority
             />
           </div>
