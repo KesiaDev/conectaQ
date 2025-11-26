@@ -11,10 +11,10 @@ export default function Home() {
     <div className="flex flex-col items-center w-full bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-4 sm:py-6">
 
       {/* Seção Instagram */}
-      <div className="w-full max-w-md mx-auto text-center space-y-3 pb-2">
+      <div className="w-full max-w-xl mx-auto text-center space-y-4 pb-4">
         <div>
-          <p className="text-xs sm:text-sm text-muted-foreground">CLIQUE PARA</p>
-          <p className="text-base sm:text-lg font-bold text-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground">CLIQUE PARA</p>
+          <p className="text-lg sm:text-2xl font-bold text-foreground">
             Seguir nosso Perfil
           </p>
         </div>
@@ -28,9 +28,9 @@ export default function Home() {
           <Image
             src="/images/instagram-promo.svg"
             alt="Instagram - @quadrangularcaxiasdosul"
-            width={260}
-            height={260}
-            className="w-40 sm:w-52 md:w-60 h-auto mx-auto"
+            width={500}
+            height={500}
+            className="w-64 sm:w-80 md:w-[420px] h-auto mx-auto"
             priority
           />
         </a>
