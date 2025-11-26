@@ -4,8 +4,37 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 
 export default function Home() {
+  const instagramUrl = "https://www.instagram.com/quadrangularcaxiasdosul?igsh=MXMzb3ZzejRhcnl3cw=="
+
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-160px)] bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-10 sm:py-16">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-160px)] bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-10 sm:py-16 gap-6 sm:gap-8">
+      {/* Seção Instagram */}
+      <div className="w-full max-w-lg mx-auto text-center space-y-4">
+        <div className="space-y-2">
+          <p className="text-xs sm:text-sm text-muted-foreground">CLIQUE PARA</p>
+          <p className="text-lg sm:text-xl font-bold text-foreground">Seguir nosso Perfil</p>
+        </div>
+        
+        <a
+          href={instagramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block cursor-pointer hover:opacity-90 transition-opacity"
+        >
+          <div className="relative inline-block">
+            <Image
+              src="/images/instagram-promo.svg"
+              alt="Instagram - @quadrangularcaxiasdosul"
+              width={400}
+              height={300}
+              className="w-full max-w-sm mx-auto h-auto"
+              priority
+            />
+          </div>
+        </a>
+      </div>
+
+      {/* Card de Cadastro */}
       <div className="w-full max-w-lg sm:max-w-2xl mx-auto">
         <Card className="w-full shadow-lg border-2">
           <CardHeader className="text-center space-y-4 sm:space-y-6">
