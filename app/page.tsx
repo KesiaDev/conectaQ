@@ -7,9 +7,9 @@ export default function Home() {
   const instagramUrl = "https://www.instagram.com/quadrangularcaxiasdosul?igsh=MXMzb3ZzejRhcnl3cw=="
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-160px)] bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-4 sm:py-6 gap-2">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-160px)] bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-4 sm:py-6 gap-0">
       {/* Seção Instagram */}
-      <div className="w-full max-w-lg mx-auto text-center space-y-1 sm:space-y-2">
+      <div className="w-full max-w-lg mx-auto text-center space-y-1">
         <div className="space-y-0.5">
           <p className="text-xs sm:text-sm text-muted-foreground">CLIQUE PARA</p>
           <p className="text-base sm:text-lg font-bold text-foreground">Seguir nosso Perfil</p>
@@ -35,7 +35,7 @@ export default function Home() {
       </div>
 
       {/* Card de Cadastro */}
-      <div className="w-full max-w-lg sm:max-w-2xl mx-auto -mt-2">
+      <div className="w-full max-w-lg sm:max-w-2xl mx-auto -mt-6 sm:-mt-8">
         <Card className="w-full shadow-lg border-2">
           <CardHeader className="text-center space-y-4 sm:space-y-6">
             <div className="flex justify-center">
