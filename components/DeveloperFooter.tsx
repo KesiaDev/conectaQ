@@ -4,7 +4,7 @@ import Image from "next/image"
 
 export default function DeveloperFooter() {
   return (
-    <div className="mt-auto border-t border-border/30 bg-gradient-to-b from-background to-muted/20">
+    <div className="mt-4 border-t border-border/30 bg-gradient-to-b from-background to-muted/20">
       <div className="container mx-auto px-4 py-10 sm:py-12">
         <div className="flex flex-col items-center justify-center gap-4">
           <div className="flex items-center gap-3 group">
