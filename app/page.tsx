@@ -11,7 +11,7 @@ export default function Home() {
     <div className="flex flex-col items-center w-full bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-4 sm:py-6">
 
       {/* Seção Instagram */}
-      <div className="w-full max-w-6xl mx-auto text-center pb-16">
+      <div className="w-full max-w-5xl mx-auto text-center pb-2">
 
         <a
           href={instagramUrl}
@@ -43,7 +43,7 @@ export default function Home() {
       </div>
 
       {/* Card de Cadastro */}
-      <div className="w-full flex justify-center mt-4">
+      <div className="w-full flex justify-center mt-2">
         <div className="w-full max-w-lg sm:max-w-2xl">
           <Card className="w-full shadow-lg border-2">
             <CardHeader className="text-center space-y-4 sm:space-y-6 pt-4">
