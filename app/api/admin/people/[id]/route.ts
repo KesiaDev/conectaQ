@@ -9,7 +9,6 @@ const updateSchema = z.object({
   ja_batizado: z.enum(["sim", "nao"]).nullable().optional(),
   denominacao: z.string().nullable().optional(),
   canal_origem: z.string().nullable().optional(),
-  data_nascimento: z.string().nullable().optional(),
   visit: z
     .object({
       status: z.enum(["novo", "em_acompanhamento", "integrado"]).optional(),
@@ -31,7 +30,6 @@ export async function PUT(request: Request, { params }: RouteParams) {
 
     const personId = params.id
 
-    const dataNascimento = data.data_nascimento ? new Date(data.data_nascimento) : undefined
     const dataVisita = data.visit?.data_visita ? new Date(data.visit.data_visita) : undefined
 
     const updated = await prisma.$transaction(async (tx) => {
@@ -44,7 +42,6 @@ export async function PUT(request: Request, { params }: RouteParams) {
           ja_batizado: data.ja_batizado ?? undefined,
           denominacao: data.denominacao ?? undefined,
           canal_origem: data.canal_origem ?? undefined,
-          data_nascimento: dataNascimento,
         },
       })
 

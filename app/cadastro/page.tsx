@@ -16,7 +16,6 @@ import Image from "next/image"
 export default function CadastroPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [dataNascimentoDisplay, setDataNascimentoDisplay] = useState("")
   const [telefoneDisplay, setTelefoneDisplay] = useState("")
   const {
     register,
@@ -54,37 +53,11 @@ export default function CadastroPage() {
     }
   }
 
-  const formatDate = (value: string) => {
-    const numbers = value.replace(/\D/g, "")
-    if (numbers.length <= 2) {
-      return numbers
-    } else if (numbers.length <= 4) {
-      return `${numbers.slice(0, 2)}/${numbers.slice(2)}`
-    } else {
-      return `${numbers.slice(0, 2)}/${numbers.slice(2, 4)}/${numbers.slice(4, 8)}`
-    }
-  }
-
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatPhone(e.target.value)
     setTelefoneDisplay(formatted)
     const numbers = formatted.replace(/\D/g, "")
     setValue("telefone", numbers)
-  }
-
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatDate(e.target.value)
-    setDataNascimentoDisplay(formatted)
-    
-    if (formatted.length === 10) {
-      const [day, month, year] = formatted.split("/")
-      if (day && month && year && year.length === 4) {
-        const isoDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`
-        setValue("data_nascimento", isoDate)
-      }
-    } else {
-      setValue("data_nascimento", "")
-    }
   }
 
   const onSubmit = async (data: RegistrationFormData) => {
@@ -146,22 +119,6 @@ export default function CadastroPage() {
                   />
                   {errors.nome_completo && (
                     <p className="text-sm text-destructive">{errors.nome_completo.message}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="data_nascimento" className="text-sm font-medium text-foreground/80">Data de Nascimento *</Label>
-                  <Input
-                    id="data_nascimento"
-                    type="text"
-                    value={dataNascimentoDisplay}
-                    onChange={handleDateChange}
-                    placeholder="dd/mm/aaaa"
-                    maxLength={10}
-                    inputMode="numeric"
-                  />
-                  {errors.data_nascimento && (
-                    <p className="text-sm text-destructive">{errors.data_nascimento.message}</p>
                   )}
                 </div>
 

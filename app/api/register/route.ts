@@ -8,16 +8,12 @@ export async function POST(request: NextRequest) {
     const validatedData = registrationSchema.parse(body)
 
     // Parse dates
-    const dataNascimento = validatedData.data_nascimento
-      ? new Date(validatedData.data_nascimento)
-      : null
     const dataVisita = new Date(validatedData.data_visita)
 
     // Create person
     const person = await prisma.people.create({
       data: {
         nome_completo: validatedData.nome_completo,
-        data_nascimento: dataNascimento,
         telefone: validatedData.telefone,
         ja_batizado: validatedData.ja_batizado,
         denominacao: validatedData.denominacao || null,

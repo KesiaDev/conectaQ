@@ -37,7 +37,6 @@ type EditForm = {
   canal_origem: string | null
   data_visita: string
   status: "novo" | "em_acompanhamento" | "integrado"
-  data_nascimento: string | null
 }
 
 const statusOptions: Array<{ value: EditForm["status"]; label: string }> = [
@@ -163,7 +162,6 @@ export default function AdminPage() {
       canal_origem: person.canal_origem,
       data_visita: lastVisit?.data_visita ? lastVisit.data_visita.slice(0, 10) : "",
       status: (lastVisit?.status as EditForm["status"]) || "novo",
-      data_nascimento: person.data_nascimento ? person.data_nascimento.slice(0, 10) : null,
     })
     setIsEditOpen(true)
   }
@@ -188,7 +186,6 @@ export default function AdminPage() {
         ja_batizado: editForm.ja_batizado === "nao_informado" ? null : editForm.ja_batizado,
         denominacao: editForm.denominacao,
         canal_origem: editForm.canal_origem,
-        data_nascimento: editForm.data_nascimento,
         visit: {
           status: editForm.status,
           data_visita: editForm.data_visita || null,
@@ -749,17 +746,6 @@ export default function AdminPage() {
                     id="edit_canal"
                     value={editForm.canal_origem ?? ""}
                     onChange={(event) => handleEditChange("canal_origem", event.target.value || null)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground/80" htmlFor="edit_data_nascimento">
-                    Data de nascimento
-                  </label>
-                  <Input
-                    id="edit_data_nascimento"
-                    type="date"
-                    value={editForm.data_nascimento ?? ""}
-                    onChange={(event) => handleEditChange("data_nascimento", event.target.value || null)}
                   />
                 </div>
                 <div className="space-y-2">
