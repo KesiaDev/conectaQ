@@ -23,17 +23,17 @@ export default function Home() {
             <Image
               src="/images/instagram-promo.svg"
               alt="Instagram - @quadrangularcaxiasdosul"
-              width={2000}
-              height={2000}
+              width={2600}
+              height={2600}
               className="
-                w-[500px]
-                sm:w-[650px]
-                md:w-[800px]
-                lg:w-[950px]
-                xl:w-[1100px]
+                w-[600px]
+                sm:w-[800px]
+                md:w-[1000px]
+                lg:w-[1200px]
+                xl:w-[1400px]
                 h-auto
                 !max-w-none
-                !min-w-[500px]
+                !min-w-[600px]
               "
               priority
             />
