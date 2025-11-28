@@ -464,7 +464,6 @@ export default function AdminPage() {
                   <SelectContent>
                     <SelectItem value="todos">Todos</SelectItem>
                     <SelectItem value="sim">Visitantes</SelectItem>
-                    <SelectItem value="nao">Membros</SelectItem>
                   </SelectContent>
                 </Select>
                 <DateRangeFilter onDateRangeChange={setDateRange} />

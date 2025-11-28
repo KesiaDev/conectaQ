@@ -50,12 +50,8 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    if (visitanteFilter !== "todos") {
-      if (visitanteFilter === "sim") {
-        where.is_visitante = true
-      } else if (visitanteFilter === "nao") {
-        where.is_visitante = false
-      }
+    if (visitanteFilter === "sim") {
+      where.is_visitante = true
     }
 
     // Filtro de data por createdAt
