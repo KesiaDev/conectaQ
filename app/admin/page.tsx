@@ -8,6 +8,7 @@ import { Search, RefreshCw, Edit, Trash2, FileText, FileSpreadsheet, LogOut, Che
 import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useSession, signOut } from "next-auth/react"
+import { DateRangeFilter } from "@/components/DateRangeFilter"
 
 interface Person {
   id: string
@@ -61,6 +62,10 @@ export default function AdminPage() {
   const [people, setPeople] = useState<Person[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [batismoFilter, setBatismoFilter] = useState<string>("todos")
+  const [dateRange, setDateRange] = useState<{ startDate: Date | null; endDate: Date | null }>({
+    startDate: null,
+    endDate: null,
+  })
   const [isLoading, setIsLoading] = useState(true)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [editForm, setEditForm] = useState<EditForm | null>(null)
@@ -100,6 +105,13 @@ export default function AdminPage() {
         batismo: batismoFilter,
       })
 
+      if (dateRange.startDate) {
+        params.append("startDate", dateRange.startDate.toISOString())
+      }
+      if (dateRange.endDate) {
+        params.append("endDate", dateRange.endDate.toISOString())
+      }
+
       const response = await fetch(`/api/admin/people?${params}`)
       if (response.ok) {
         const result = await response.json()
@@ -112,7 +124,7 @@ export default function AdminPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [searchTerm, batismoFilter])
+  }, [searchTerm, batismoFilter, dateRange])
 
   useEffect(() => {
     fetchPeople(1)
@@ -121,7 +133,7 @@ export default function AdminPage() {
   useEffect(() => {
     setCurrentPage(1)
     fetchPeople(1)
-  }, [batismoFilter, fetchPeople])
+  }, [batismoFilter, dateRange, fetchPeople])
 
   // Debounce para busca
   useEffect(() => {
@@ -243,6 +255,14 @@ export default function AdminPage() {
         search: searchTerm,
         batismo: batismoFilter,
       })
+      
+      if (dateRange.startDate) {
+        params.append("startDate", dateRange.startDate.toISOString())
+      }
+      if (dateRange.endDate) {
+        params.append("endDate", dateRange.endDate.toISOString())
+      }
+      
       // Buscar todos sem limite de página para exportação
       const response = await fetch(`/api/admin/people?${params}&limit=10000`)
       if (response.ok) {
@@ -413,7 +433,7 @@ export default function AdminPage() {
           </CardHeader>
           <CardContent>
             <div className="mb-6 space-y-4">
-              <div className="grid gap-4 md:grid-cols-[minmax(200px,1fr)_220px]">
+              <div className="grid gap-4 md:grid-cols-[minmax(200px,1fr)_220px_auto]">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                   <Input
@@ -433,6 +453,7 @@ export default function AdminPage() {
                     <SelectItem value="nao">Não Batizados</SelectItem>
                   </SelectContent>
                 </Select>
+                <DateRangeFilter onDateRangeChange={setDateRange} />
               </div>
             </div>
 

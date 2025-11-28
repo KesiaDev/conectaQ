@@ -12,6 +12,8 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1")
     const search = searchParams.get("search") || ""
     const batismoFilter = searchParams.get("batismo") || "todos"
+    const startDateParam = searchParams.get("startDate")
+    const endDateParam = searchParams.get("endDate")
     const limitParam = searchParams.get("limit")
     const limit = limitParam ? parseInt(limitParam) : ITEMS_PER_PAGE
 
@@ -44,6 +46,29 @@ export async function GET(request: NextRequest) {
           where.AND.push({ OR: where.OR })
           delete where.OR
         }
+      }
+    }
+
+    // Filtro de data por createdAt
+    if (startDateParam || endDateParam) {
+      const dateFilter: any = {}
+      
+      if (startDateParam) {
+        const startDate = new Date(startDateParam)
+        // Garantir que está no início do dia (00:00:00)
+        startDate.setUTCHours(0, 0, 0, 0)
+        dateFilter.gte = startDate
+      }
+      
+      if (endDateParam) {
+        const endDate = new Date(endDateParam)
+        // Garantir que está no final do dia (23:59:59.999)
+        endDate.setUTCHours(23, 59, 59, 999)
+        dateFilter.lte = endDate
+      }
+      
+      if (Object.keys(dateFilter).length > 0) {
+        where.created_at = dateFilter
       }
     }
 
