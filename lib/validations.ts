@@ -7,6 +7,7 @@ export const registrationSchema = z.object({
     required_error: "Por favor, informe se você já é batizado",
   }),
   denominacao: z.string().optional(),
+  is_visitante: z.boolean().default(false),
   culto_dia: z.string().min(1, "Dia da visita do culto é obrigatório"),
   data_visita: z.string().min(1, "Data da visita é obrigatória"),
   consent_lgpd: z.boolean().refine((val) => val === true, {

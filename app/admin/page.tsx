@@ -18,6 +18,7 @@ interface Person {
   data_nascimento: string | null
   ja_batizado: string | null
   denominacao: string | null
+  is_visitante: boolean
   created_at: string
   canal_origem: string | null
   visits: Array<{
@@ -62,6 +63,7 @@ export default function AdminPage() {
   const [people, setPeople] = useState<Person[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [batismoFilter, setBatismoFilter] = useState<string>("todos")
+  const [visitanteFilter, setVisitanteFilter] = useState<string>("todos")
   const [dateRange, setDateRange] = useState<{ startDate: Date | null; endDate: Date | null }>({
     startDate: null,
     endDate: null,
@@ -103,6 +105,7 @@ export default function AdminPage() {
         page: page.toString(),
         search: searchTerm,
         batismo: batismoFilter,
+        visitante: visitanteFilter,
       })
 
       if (dateRange.startDate) {
@@ -124,7 +127,7 @@ export default function AdminPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [searchTerm, batismoFilter, dateRange])
+  }, [searchTerm, batismoFilter, visitanteFilter, dateRange])
 
   useEffect(() => {
     fetchPeople(1)
@@ -133,7 +136,7 @@ export default function AdminPage() {
   useEffect(() => {
     setCurrentPage(1)
     fetchPeople(1)
-  }, [batismoFilter, dateRange, fetchPeople])
+  }, [batismoFilter, visitanteFilter, dateRange, fetchPeople])
 
   // Debounce para busca
   useEffect(() => {
@@ -254,6 +257,7 @@ export default function AdminPage() {
         page: "1",
         search: searchTerm,
         batismo: batismoFilter,
+        visitante: visitanteFilter,
       })
       
       if (dateRange.startDate) {
@@ -433,7 +437,7 @@ export default function AdminPage() {
           </CardHeader>
           <CardContent>
             <div className="mb-6 space-y-4">
-              <div className="grid gap-4 md:grid-cols-[minmax(200px,1fr)_220px_auto]">
+              <div className="grid gap-4 md:grid-cols-[minmax(200px,1fr)_220px_220px_auto]">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                   <Input
@@ -451,6 +455,16 @@ export default function AdminPage() {
                     <SelectItem value="todos">Todos</SelectItem>
                     <SelectItem value="sim">Batizados</SelectItem>
                     <SelectItem value="nao">Não Batizados</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={visitanteFilter} onValueChange={setVisitanteFilter}>
+                  <SelectTrigger className="border-primary/20 focus:border-primary w-full">
+                    <SelectValue placeholder="Filtrar por tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos</SelectItem>
+                    <SelectItem value="sim">Visitantes</SelectItem>
+                    <SelectItem value="nao">Membros</SelectItem>
                   </SelectContent>
                 </Select>
                 <DateRangeFilter onDateRangeChange={setDateRange} />

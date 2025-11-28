@@ -34,6 +34,7 @@ model People {
   uf                String?
   ja_batizado       String?  // "sim" ou "nao"
   denominacao       String?  // denominação se batizado
+  is_visitante      Boolean  @default(false) // se é visitante ou membro
   consent_lgpd_at   DateTime?
   canal_origem      String?  // QR-19h, recepção-A
   created_at        DateTime @default(now())

@@ -27,6 +27,7 @@ export default function CadastroPage() {
     resolver: zodResolver(registrationSchema),
     defaultValues: {
       ja_batizado: undefined,
+      is_visitante: false,
       consent_lgpd: false,
       culto_dia: "",
       data_visita: "",
@@ -35,6 +36,8 @@ export default function CadastroPage() {
 
   const jaBatizado = watch("ja_batizado")
   const cultoDia = watch("culto_dia")
+  const nomeCompleto = watch("nome_completo")
+  const isVisitante = watch("is_visitante")
 
   useEffect(() => {
     if (cultoDia) {
@@ -119,6 +122,29 @@ export default function CadastroPage() {
                   />
                   {errors.nome_completo && (
                     <p className="text-sm text-destructive">{errors.nome_completo.message}</p>
+                  )}
+                  {nomeCompleto && nomeCompleto.length >= 3 && (
+                    <div className="space-y-2 pt-2">
+                      <Label className="text-sm font-medium text-foreground/80">É visitante? *</Label>
+                      <div className="flex gap-3">
+                        <Button
+                          type="button"
+                          variant={isVisitante === true ? "default" : "outline"}
+                          onClick={() => setValue("is_visitante", true)}
+                          className="flex-1"
+                        >
+                          Sim
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={isVisitante === false ? "default" : "outline"}
+                          onClick={() => setValue("is_visitante", false)}
+                          className="flex-1"
+                        >
+                          Não
+                        </Button>
+                      </div>
+                    </div>
                   )}
                 </div>
 

@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1")
     const search = searchParams.get("search") || ""
     const batismoFilter = searchParams.get("batismo") || "todos"
+    const visitanteFilter = searchParams.get("visitante") || "todos"
     const startDateParam = searchParams.get("startDate")
     const endDateParam = searchParams.get("endDate")
     const limitParam = searchParams.get("limit")
@@ -46,6 +47,14 @@ export async function GET(request: NextRequest) {
           where.AND.push({ OR: where.OR })
           delete where.OR
         }
+      }
+    }
+
+    if (visitanteFilter !== "todos") {
+      if (visitanteFilter === "sim") {
+        where.is_visitante = true
+      } else if (visitanteFilter === "nao") {
+        where.is_visitante = false
       }
     }
 
