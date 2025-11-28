@@ -9,6 +9,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
+import type { DateRange as ReactDayPickerDateRange } from "react-day-picker"
 
 type DateRange = {
   startDate: Date | null
@@ -24,13 +25,7 @@ type PresetOption = "todos" | "hoje" | "ultimos_7" | "ultimos_30" | "este_mes" |
 
 export function DateRangeFilter({ onDateRangeChange, className }: DateRangeFilterProps) {
   const [preset, setPreset] = React.useState<PresetOption>("todos")
-  const [customRange, setCustomRange] = React.useState<{
-    from: Date | undefined
-    to: Date | undefined
-  }>({
-    from: undefined,
-    to: undefined,
-  })
+  const [customRange, setCustomRange] = React.useState<ReactDayPickerDateRange | undefined>(undefined)
   const [isCustomOpen, setIsCustomOpen] = React.useState(false)
 
   const getDateRangeForPreset = (presetValue: PresetOption): DateRange => {
@@ -70,7 +65,7 @@ export function DateRangeFilter({ onDateRangeChange, className }: DateRangeFilte
         }
       }
       case "personalizado": {
-        if (customRange.from && customRange.to) {
+        if (customRange?.from && customRange?.to) {
           return {
             startDate: startOfDay(customRange.from),
             endDate: endOfDay(customRange.to),
@@ -94,23 +89,21 @@ export function DateRangeFilter({ onDateRangeChange, className }: DateRangeFilte
     }
   }
 
-  const handleCustomRangeSelect = (range: { from: Date | undefined; to: Date | undefined } | undefined) => {
-    if (range) {
-      setCustomRange(range)
-      if (range.from && range.to) {
-        const dateRange = {
-          startDate: startOfDay(range.from),
-          endDate: endOfDay(range.to),
-        }
-        onDateRangeChange(dateRange)
-        setIsCustomOpen(false)
+  const handleCustomRangeSelect = (range: ReactDayPickerDateRange | undefined) => {
+    setCustomRange(range)
+    if (range?.from && range?.to) {
+      const dateRange = {
+        startDate: startOfDay(range.from),
+        endDate: endOfDay(range.to),
       }
+      onDateRangeChange(dateRange)
+      setIsCustomOpen(false)
     }
   }
 
   const handleClear = () => {
     setPreset("todos")
-    setCustomRange({ from: undefined, to: undefined })
+    setCustomRange(undefined)
     onDateRangeChange({ startDate: null, endDate: null })
   }
 
@@ -118,7 +111,7 @@ export function DateRangeFilter({ onDateRangeChange, className }: DateRangeFilte
     if (preset === "todos") {
       return "Período"
     }
-    if (preset === "personalizado" && customRange.from && customRange.to) {
+    if (preset === "personalizado" && customRange?.from && customRange?.to) {
       return `${format(customRange.from, "dd/MM/yyyy", { locale: ptBR })} - ${format(customRange.to, "dd/MM/yyyy", { locale: ptBR })}`
     }
     const range = getDateRangeForPreset(preset)
@@ -152,11 +145,11 @@ export function DateRangeFilter({ onDateRangeChange, className }: DateRangeFilte
               variant="outline"
               className={cn(
                 "w-[280px] justify-start text-left font-normal border-primary/20 focus:border-primary",
-                !customRange.from && !customRange.to && "text-muted-foreground"
+                !customRange?.from && !customRange?.to && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {customRange.from && customRange.to ? (
+              {customRange?.from && customRange?.to ? (
                 `${format(customRange.from, "dd/MM/yyyy", { locale: ptBR })} - ${format(customRange.to, "dd/MM/yyyy", { locale: ptBR })}`
               ) : (
                 <span>Selecione o intervalo</span>
@@ -167,7 +160,7 @@ export function DateRangeFilter({ onDateRangeChange, className }: DateRangeFilte
             <Calendar
               initialFocus
               mode="range"
-              defaultMonth={customRange.from}
+              defaultMonth={customRange?.from}
               selected={customRange}
               onSelect={handleCustomRangeSelect}
               numberOfMonths={2}
@@ -176,7 +169,7 @@ export function DateRangeFilter({ onDateRangeChange, className }: DateRangeFilte
         </Popover>
       )}
 
-      {(preset !== "todos" || (preset === "personalizado" && (customRange.from || customRange.to))) && (
+      {((preset !== "todos" && preset !== "personalizado") || (preset === "personalizado" && (customRange?.from || customRange?.to))) && (
         <Button
           variant="ghost"
           size="icon"
