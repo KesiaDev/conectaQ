@@ -95,7 +95,13 @@ export default function AdminPage() {
 
   const formatDate = (value?: string | null) => {
     if (!value) return "-"
-    return new Date(value).toLocaleDateString("pt-BR")
+    const date = new Date(value)
+    // Garantir que mostra apenas a data (dia/mês/ano) sem hora
+    return date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    })
   }
 
   const fetchPeople = useCallback(async (page: number = 1) => {
