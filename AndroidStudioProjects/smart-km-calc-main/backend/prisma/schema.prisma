@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String      @id @default(uuid())
+  email       String      @unique
+  password    String
+  name        String?
+  createdAt   DateTime    @default(now())
+  fuelEntries FuelEntry[]
+  tolls       Toll[]
+  vehicleCosts VehicleCost[]
+}
+
+model FuelEntry {
+  id                   String    @id @default(uuid())
+  userId               String
+  date                 DateTime  @default(now())
+  fuelPrice            Float
+  liters               Float?
+  fuelType             String    @default("gasolina")
+  vehicleName          String?
+  usageType            String?   @default("misto")
+  estimatedConsumption Float?
+  estimatedRange       Float?
+  totalCost            Float?
+  km                   Float?    @default(0)
+  actualKm             Float?
+  actualConsumption    Float?
+  costPerKm            Float?
+  status               String    @default("open")
+  createdAt            DateTime  @default(now())
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tolls                Toll[]
+}
+
+model Toll {
+  id          String     @id @default(uuid())
+  userId      String
+  fuelEntryId String?
+  description String?
+  amount      Float
+  createdAt   DateTime   @default(now())
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fuelEntry   FuelEntry? @relation(fields: [fuelEntryId], references: [id], onDelete: Cascade)
+}
+
+model VehicleCost {
+  id          String   @id @default(uuid())
+  userId      String
+  category    String   @default("manutencao")
+  description String?
+  amount      Float
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Km por Litro</string>
+    <string name="title_activity_main">Km por Litro</string>
+    <string name="package_name">com.nandidev.kmporitro</string>
+    <string name="custom_url_scheme">com.nandidev.kmporitro</string>
+</resources>
