@@ -13,6 +13,9 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 
+const fieldClassName =
+  "h-12 rounded-xl border-border bg-muted/40 px-4 text-base transition-colors focus:bg-background focus:ring-offset-0 focus-visible:bg-background focus-visible:ring-offset-0"
+
 export default function CadastroPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -91,9 +94,9 @@ export default function CadastroPage() {
 
   return (
     <div className="bg-gradient-to-br from-background via-secondary/5 to-accent/10 p-4 py-8 sm:py-12">
-      <div className="mx-auto w-full max-w-xl lg:max-w-3xl">
-        <Card className="shadow-lg border-2">
-          <CardHeader className="text-center space-y-4">
+      <div className="mx-auto w-full max-w-xl">
+        <Card className="rounded-3xl border-0 shadow-xl shadow-primary/5">
+          <CardHeader className="text-center space-y-3 p-6 sm:p-8 sm:pb-6">
             <div className="flex justify-center">
               <Image
                 src="/images/logos/Logo_Claro_ConectaQ.svg"
@@ -103,22 +106,23 @@ export default function CadastroPage() {
                 className="w-40 h-auto sm:w-52"
               />
             </div>
-            <CardTitle className="text-2xl font-semibold text-primary sm:text-3xl">
+            <CardTitle className="text-2xl font-semibold text-primary">
               Cadastro de Visitante
             </CardTitle>
             <CardDescription className="text-sm text-foreground/80 sm:text-base">
               Preencha os dados abaixo para fazer seu cadastro
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-4 sm:px-6">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div className="space-y-6 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
-                <div className="space-y-2 md:col-span-2">
+          <CardContent className="px-5 pb-6 sm:px-8 sm:pb-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              <div className="space-y-5">
+                <div className="space-y-2">
                   <Label htmlFor="nome_completo" className="text-sm font-medium text-foreground/80">Nome Completo *</Label>
                   <Input
                     id="nome_completo"
                     {...register("nome_completo")}
                     placeholder="Digite seu nome completo"
+                    className={fieldClassName}
                   />
                   {errors.nome_completo && (
                     <p className="text-sm text-destructive">{errors.nome_completo.message}</p>
@@ -131,7 +135,7 @@ export default function CadastroPage() {
                           type="button"
                           variant={isVisitante === true ? "default" : "outline"}
                           onClick={() => setValue("is_visitante", true)}
-                          className="flex-1"
+                          className="h-12 flex-1 rounded-xl text-base"
                         >
                           Sim
                         </Button>
@@ -139,7 +143,7 @@ export default function CadastroPage() {
                           type="button"
                           variant={isVisitante === false ? "default" : "outline"}
                           onClick={() => setValue("is_visitante", false)}
-                          className="flex-1"
+                          className="h-12 flex-1 rounded-xl text-base"
                         >
                           Não
                         </Button>
@@ -158,22 +162,23 @@ export default function CadastroPage() {
                     placeholder="(54) 99999-9999"
                     maxLength={15}
                     inputMode="numeric"
+                    className={fieldClassName}
                   />
                   {errors.telefone && (
                     <p className="text-sm text-destructive">{errors.telefone.message}</p>
                   )}
                 </div>
 
-                <div className="space-y-2 md:col-span-2">
+                <div className="space-y-2">
                   <Label className="text-sm font-medium text-foreground/80">Já é batizado nas águas? *</Label>
                   <Select
                     value={jaBatizado}
                     onValueChange={(value) => setValue("ja_batizado", value as "sim" | "nao")}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className={fieldClassName}>
                       <SelectValue placeholder="Selecione uma opção" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="rounded-xl">
                       <SelectItem value="sim">Sim</SelectItem>
                       <SelectItem value="nao">Não</SelectItem>
                     </SelectContent>
@@ -183,7 +188,7 @@ export default function CadastroPage() {
                   )}
                 </div>
 
-                <div className="space-y-2 md:col-span-2">
+                <div className="space-y-2">
                   <Label htmlFor="denominacao" className="text-sm font-medium text-foreground/80">
                     {jaBatizado === "sim" ? "Qual denominação?" : "Denominação (opcional)"}
                   </Label>
@@ -191,15 +196,17 @@ export default function CadastroPage() {
                     id="denominacao"
                     {...register("denominacao")}
                     placeholder=""
+                    className={fieldClassName}
                   />
                 </div>
 
-                <div className="space-y-2 md:col-span-2 lg:col-span-1">
+                <div className="space-y-2">
                   <Label htmlFor="culto_dia" className="text-sm font-medium text-foreground/80">Dia da visita do culto *</Label>
                   <Input
                     id="culto_dia"
                     type="date"
                     {...register("culto_dia")}
+                    className={fieldClassName}
                   />
                   {errors.culto_dia && (
                     <p className="text-sm text-destructive">{errors.culto_dia.message}</p>
@@ -207,7 +214,7 @@ export default function CadastroPage() {
                 </div>
               </div>
 
-              <div className="space-y-4 rounded-md border border-primary/20 bg-muted/50 p-4 sm:p-5">
+              <div className="space-y-4 rounded-2xl bg-muted/50 p-4 sm:p-5">
                 <div className="flex items-start gap-3">
                   <Checkbox
                     id="consent_lgpd"
@@ -226,7 +233,7 @@ export default function CadastroPage() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all" disabled={isSubmitting}>
+              <Button type="submit" className="h-12 w-full rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-md transition-all hover:bg-primary/90 hover:shadow-lg" disabled={isSubmitting}>
                 {isSubmitting ? "Enviando..." : "Finalizar Cadastro"}
               </Button>
             </form>
