@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import GenerosidadeCard from '@/components/GenerosidadeCard'
 
 export default function Home() {
   const instagramUrl =
@@ -42,9 +43,9 @@ export default function Home() {
 
       </div>
 
-      {/* Card de Cadastro */}
+      {/* Cards de Visitante e Generosidade */}
       <div className="w-full flex justify-center mt-2">
-        <div className="w-full max-w-lg sm:max-w-2xl">
+        <div className="w-full max-w-lg sm:max-w-2xl space-y-6">
           <Card className="w-full shadow-lg border-2">
             <CardHeader className="text-center space-y-4 sm:space-y-6 pt-4">
               <div className="flex justify-center">
@@ -59,7 +60,7 @@ export default function Home() {
               </div>
 
               <CardTitle className="text-lg sm:text-xl font-semibold text-primary">
-                Cadastro CASA
+                Área do Visitante
               </CardTitle>
 
               <CardDescription className="text-sm text-foreground/80 sm:text-base">
@@ -69,8 +70,8 @@ export default function Home() {
 
             <CardContent className="space-y-6 px-4 sm:px-6">
               <p className="text-center text-sm leading-relaxed text-foreground/70 sm:text-base">
-                Ficamos felizes em recebê-lo! Faça seu cadastro para que possamos conhecê-lo melhor
-                e mantê-lo informado sobre nossos eventos e atividades.
+                Está visitando nossa igreja pela primeira vez? Ficaremos felizes em conhecer você!
+                Faça seu cadastro para que possamos recebê-lo melhor.
               </p>
 
               <Link href="/cadastro" className="block">
@@ -78,11 +79,13 @@ export default function Home() {
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all"
                   size="lg"
                 >
-                  Fazer cadastro
+                  FAZER MEU CADASTRO
                 </Button>
               </Link>
             </CardContent>
           </Card>
+
+          <GenerosidadeCard />
         </div>
       </div>
     </div>
