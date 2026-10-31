@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Check, Copy } from "lucide-react"
+import { Check, Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -51,50 +51,37 @@ export default function GenerosidadeCard() {
   }
 
   return (
-    <Card className="w-full shadow-lg border-2">
-      <CardHeader className="text-center space-y-2 pt-6">
-        <CardTitle className="text-lg sm:text-xl font-semibold text-primary">
+    <Card className="w-full rounded-2xl border-0 shadow-md">
+      <CardHeader className="space-y-2 p-4 pb-3 sm:p-6 sm:pb-3">
+        <CardTitle className="flex items-center gap-2 text-base font-semibold text-foreground sm:text-lg">
+          <Heart className="h-5 w-5 text-primary" aria-hidden="true" />
           Generosidade
         </CardTitle>
 
-        <CardDescription className="text-sm text-foreground/80 sm:text-base">
-          Dízimos e Ofertas
+        <CardDescription className="text-sm leading-relaxed text-foreground/70 sm:text-base">
+          Dízimos e ofertas. Sua contribuição faz parte desta missão.
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-6 px-4 sm:px-6">
-        <p className="text-center text-sm leading-relaxed text-foreground/70 sm:text-base">
-          Sua generosidade faz parte desta missão. Agradecemos por contribuir com aquilo que Deus
-          tem realizado através da nossa igreja.
+      <CardContent className="space-y-2 p-4 pt-0 sm:p-6 sm:pt-0">
+        <Button
+          type="button"
+          onClick={handleCopy}
+          className="w-full rounded-xl bg-primary text-base font-bold text-primary-foreground shadow-md transition-all hover:bg-primary/90 hover:shadow-lg"
+          size="lg"
+        >
+          {status === "copied" && <Check className="mr-2 h-4 w-4" />}
+          {status === "copied" ? "CHAVE PIX COPIADA!" : "CONTRIBUIR VIA PIX"}
+        </Button>
+
+        <p className="text-center text-xs text-muted-foreground sm:text-sm">
+          Chave Pix: <span className="select-all break-all">{PIX_KEY}</span>
         </p>
 
-        <div className="rounded-md border border-primary/20 bg-muted/50 p-4 text-center sm:p-5">
-          <p className="text-sm font-medium text-foreground/80">Chave Pix:</p>
-          <p className="mt-1 select-all break-all text-lg font-semibold text-primary sm:text-xl">
-            {PIX_KEY}
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          <Button
-            type="button"
-            onClick={handleCopy}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all"
-            size="lg"
-          >
-            {status === "copied" ? (
-              <Check className="mr-2 h-4 w-4" />
-            ) : (
-              <Copy className="mr-2 h-4 w-4" />
-            )}
-            {status === "copied" ? "CHAVE PIX COPIADA!" : "COPIAR CHAVE PIX"}
-          </Button>
-
-          <p role="status" className="min-h-5 text-center text-sm text-foreground/70">
-            {status === "copied" && "Chave Pix copiada com sucesso!"}
-            {status === "error" && "Não foi possível copiar. Selecione a chave acima e copie manualmente."}
-          </p>
-        </div>
+        <p role="status" className="text-center text-sm text-foreground/70 empty:hidden">
+          {status === "copied" && "Chave Pix copiada com sucesso!"}
+          {status === "error" && "Não foi possível copiar. Selecione a chave acima e copie manualmente."}
+        </p>
       </CardContent>
     </Card>
   )

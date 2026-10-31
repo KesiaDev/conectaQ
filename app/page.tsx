@@ -45,45 +45,33 @@ export default function Home() {
 
       {/* Cards de Visitante e Generosidade */}
       <div className="w-full flex justify-center mt-2">
-        <div className="w-full max-w-lg sm:max-w-2xl space-y-6">
-          <Card className="w-full shadow-lg border-2">
-            <CardHeader className="text-center space-y-4 sm:space-y-6 pt-4">
-              <div className="flex justify-center">
-                <Image
-                  src="/images/logos/Logo_Claro_ConectaQ.svg"
-                  alt="ConectaQ - Conexão Quadrangular"
-                  width={280}
-                  height={120}
-                  priority
-                  className="w-44 h-auto sm:w-64"
-                />
-              </div>
+        <div className="w-full max-w-lg sm:max-w-2xl space-y-4">
+          <div className="space-y-3">
+            <p className="text-center text-xl font-semibold text-primary">ConectaQ</p>
 
-              <CardTitle className="text-lg sm:text-xl font-semibold text-primary">
-                Área do Visitante
-              </CardTitle>
+            <Card className="w-full rounded-2xl border-0 shadow-md">
+              <CardHeader className="space-y-2 p-4 pb-3 sm:p-6 sm:pb-3">
+                <CardTitle className="text-base font-semibold text-foreground sm:text-lg">
+                  Área do Visitante
+                </CardTitle>
 
-              <CardDescription className="text-sm text-foreground/80 sm:text-base">
-                Igreja do Evangelho Quadrangular • Caxias do Sul
-              </CardDescription>
-            </CardHeader>
+                <CardDescription className="text-sm leading-relaxed text-foreground/70 sm:text-base">
+                  Está visitando nossa igreja pela primeira vez? Queremos conhecer você!
+                </CardDescription>
+              </CardHeader>
 
-            <CardContent className="space-y-6 px-4 sm:px-6">
-              <p className="text-center text-sm leading-relaxed text-foreground/70 sm:text-base">
-                Está visitando nossa igreja pela primeira vez? Ficaremos felizes em conhecer você!
-                Faça seu cadastro para que possamos recebê-lo melhor.
-              </p>
-
-              <Link href="/cadastro" className="block">
-                <Button
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all"
-                  size="lg"
-                >
-                  FAZER MEU CADASTRO
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+              <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+                <Link href="/cadastro" className="block">
+                  <Button
+                    className="w-full rounded-xl bg-primary text-base font-bold text-primary-foreground shadow-md transition-all hover:bg-primary/90 hover:shadow-lg"
+                    size="lg"
+                  >
+                    FAZER MEU CADASTRO
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
 
           <GenerosidadeCard />
         </div>
