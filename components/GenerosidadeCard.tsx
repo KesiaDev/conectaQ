@@ -8,6 +8,34 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 const PIX_KEY = "62955505028762"
 const FEEDBACK_DURATION_MS = 3000
 
+// Versão Almeida Revista e Atualizada (ARA)
+const VERSES = [
+  {
+    text: "Cada um contribua segundo tiver proposto no coração, não com tristeza ou por necessidade; porque Deus ama a quem dá com alegria.",
+    reference: "2 Coríntios 9:7",
+  },
+  {
+    text: "Mais bem-aventurado é dar que receber.",
+    reference: "Atos 20:35",
+  },
+  {
+    text: "A alma generosa prosperará, e quem dá a beber será dessedentado.",
+    reference: "Provérbios 11:25",
+  },
+  {
+    text: "Não negligencieis, igualmente, a prática do bem e a mútua cooperação; pois, com tais sacrifícios, Deus se compraz.",
+    reference: "Hebreus 13:16",
+  },
+  {
+    text: "E o meu Deus, segundo a sua riqueza em glória, há de suprir, em Cristo Jesus, cada uma de vossas necessidades.",
+    reference: "Filipenses 4:19",
+  },
+  {
+    text: "Graças a Deus pelo seu dom inefável!",
+    reference: "2 Coríntios 9:15",
+  },
+]
+
 async function copyToClipboard(text: string) {
   if (navigator.clipboard && window.isSecureContext) {
     try {
@@ -38,6 +66,7 @@ async function copyToClipboard(text: string) {
 
 export default function GenerosidadeCard() {
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle")
+  const [verse, setVerse] = useState<(typeof VERSES)[number] | null>(null)
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => () => clearTimeout(timeoutRef.current), [])
@@ -45,6 +74,9 @@ export default function GenerosidadeCard() {
   const handleCopy = async () => {
     const copied = await copyToClipboard(PIX_KEY)
     setStatus(copied ? "copied" : "error")
+    if (copied) {
+      setVerse((current) => current ?? VERSES[Math.floor(Math.random() * VERSES.length)])
+    }
 
     clearTimeout(timeoutRef.current)
     timeoutRef.current = setTimeout(() => setStatus("idle"), FEEDBACK_DURATION_MS)
@@ -78,10 +110,37 @@ export default function GenerosidadeCard() {
           Chave Pix: <span className="select-all break-all">{PIX_KEY}</span>
         </p>
 
-        <p role="status" className="text-center text-sm text-foreground/70 empty:hidden">
-          {status === "copied" && "Chave Pix copiada com sucesso!"}
-          {status === "error" && "Não foi possível copiar. Selecione a chave acima e copie manualmente."}
-        </p>
+        <div role="status" className="empty:hidden">
+          {status === "error" && (
+            <p className="text-center text-sm text-foreground/70">
+              Não foi possível copiar. Selecione a chave acima e copie manualmente.
+            </p>
+          )}
+
+          {verse && (
+            <div className="mt-2 space-y-3 rounded-2xl bg-muted/50 p-5 text-center animate-in fade-in slide-in-from-top-2 duration-500">
+              <Heart className="mx-auto h-5 w-5 fill-secondary text-secondary" aria-hidden="true" />
+
+              <div className="space-y-1">
+                <p className="text-base font-semibold text-primary">
+                  Gratidão pela sua generosidade!
+                </p>
+                <p className="text-sm text-foreground/70">
+                  Que Deus abençoe você e a sua família.
+                </p>
+              </div>
+
+              <blockquote className="space-y-1 border-t border-border pt-3">
+                <p className="text-sm italic leading-relaxed text-foreground/80 sm:text-base">
+                  “{verse.text}”
+                </p>
+                <footer className="text-xs font-medium text-muted-foreground sm:text-sm">
+                  {verse.reference}
+                </footer>
+              </blockquote>
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   )
